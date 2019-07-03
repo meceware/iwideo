@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+  <title>iwideo - No Dependency Youtube and Self-Hosted Background Videos</title>
+  <meta name="description" content="Background videos made easy. Supports both YouTube and self hosted videos."/>
+
+  <link href="https://fonts.googleapis.com/css?family=Noto+Sans:400,700" rel="stylesheet"/>
+
+  <link href="./assets/demo.css" rel="stylesheet"/>
+</head>
+
+<body>
+  <section class="section cover js-cover">
+    <div class="container">
+      <div class="grid">
+        <div class="grid__cell grid__cell--100">
+          <h1>iwideo</h1>
+          <p>No-dependencies library for displaying background videos...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="grid">
+        <div class="grid__cell grid__cell--100">
+          <h2>Why iwideo?</h2>
+          <p>I wanted to create an easy and no-dependeny background video library for one of my projects that supports local hosted videos as well as Youtube and Vimeo. This library can be used with any project without any dependencies. It's only 4KB gzipped.</p>
+          <a href="https://github.com/meceware/iwideo">Documentation (GitHub)</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section -no-top-padding">
+    <div class="container">
+      <div class="grid">
+        <div class="grid__cell grid__cell--100">
+          <h2>Features</h2>
+          <ul>
+            <li>Supports self hosted, YouTube and Vimeo videos</li>
+            <li>Same API for all providers</li>
+            <li>Responsive out of the box</li>
+            <li>Lighweight, only includes necessary features but extendable via JavaScript</li>
+            <li>Mobile detection (Mobile or devices under 768px)</li>
+            <li>Only 4KB gzipped</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="grid">
+        <div class="grid__cell grid__cell--100">
+          <h3>Simple self hosted bg</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="demo-1" class="demo-bg" data-iwideo="%7B%22src%22%3A%22mp4%3Ahttps%3A%2F%2Fgithub.com%2Fmediaelement%2Fmediaelement-files%2Fblob%2Fmaster%2Fecho-hereweare.mp4%3Fraw%3Dtrue%2Cwebm%3Ahttps%3A%2F%2Fgithub.com%2Fmediaelement%2Fmediaelement-files%2Fblob%2Fmaster%2Fecho-hereweare.webm%3Fraw%3Dtrue%2Cogv%3Ahttps%3A%2F%2Fgithub.com%2Fmediaelement%2Fmediaelement-files%2Fblob%2Fmaster%2Fecho-hereweare.ogv%3Fraw%3Dtrue%22%2C%22poster%22%3A%22https%3A%2F%2Fcommondatastorage.googleapis.com%2Fgtv-videos-bucket%2Fsample%2Fimages%2FElephantsDream.jpg%22%7D"></div>
+
+  <section class="section -no-bottom-padding">
+    <div class="container">
+      <div class="grid">
+        <div class="grid__cell grid__cell--100">
+          <h3>Simple YouTube hosted bg</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="demo-2" class="demo-bg"></div>
+
+  <section class="section -no-bottom-padding">
+    <div class="container">
+      <div class="grid">
+        <div class="grid__cell grid__cell--100">
+          <h3>Simple Vimeo hosted bg</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="demo-vimeo" class="demo-bg"></div>
+
+  <section class="section -no-bottom-padding">
+    <div class="container">
+      <div class="grid">
+        <div class="grid__cell grid__cell--100">
+          <h3>Works on non-full-width elements as well, of course</h3>
+          <div id="demo-3" class="demo-el"></div>
+          <p>And comes with a simple API:</p>
+          <ul>
+            <li>
+              <a href="#" class="js-play">Play</a>
+            </li>
+            <li>
+              <a href="#" class="js-pause">Pause</a>
+            </li>
+            <li>
+              <a href="#" class="js-show-poster">Show poster</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script type="text/javascript" src="../dist/iwideo.min.js"></script>
+  <script type="text/javascript" src="./demo/demo.js"></script>
+
+</body>
+
+</html>
