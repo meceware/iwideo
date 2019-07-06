@@ -639,7 +639,10 @@
       poster: '',
       zIndex: -1,
       autoResize: true,
-      isMobile: false
+      isMobile: function isMobile() {
+        var isMobile = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/g.test(navigator.userAgent || navigator.vendor || global.opera);
+        return isMobile || global.innerWidth < 768;
+      }
     };
 
     var iwideo =
@@ -737,12 +740,7 @@
 
         var parsed = parse(this.options.src);
         this.type = parsed.type;
-        this.videoID = parsed.id; // Initialize
-
-        var isMobile = typeof this.options.isMobile === 'function' ? this.options.isMobile : function () {
-          var isMobile = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/g.test(navigator.userAgent || navigator.vendor || global.opera);
-          return isMobile || global.innerWidth < 768;
-        }; // Generates a wrapper that is used for holding the media
+        this.videoID = parsed.id; // Generates a wrapper that is used for holding the media
 
         var constructWrapper = function constructWrapper() {
           var self = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this;
@@ -860,7 +858,7 @@
 
         constructWrapper(); // Initialize provider
 
-        if (!isMobile()) {
+        if (!(self.options.isMobile && self.options.isMobile())) {
           constructPlayer();
         } // Add the overlay
 

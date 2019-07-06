@@ -1,7 +1,7 @@
 # iwideo
 ## No-dependencies library for displaying background videos in browsers
 
-It supports all modern browsers. It disables the videos on mobile browsers or windows under 768px.
+It supports all modern browsers. It disables the videos on mobile browsers or windows under 768px, if wanted.
 
 ## Supported Providers
 
@@ -45,7 +45,10 @@ The default options are
   poster: '',
   zIndex: -1,
   autoResize: true,
-  isMobile: false,
+  isMobile: () => {
+    const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/g.test(navigator.userAgent || navigator.vendor || global.opera);
+    return isMobile || ( global.innerWidth < 768 );
+  },
 }
 ```
 
@@ -105,6 +108,8 @@ iwideo.scan();
 ```
 
 This will initialize all elements with `data-iwideo` data attribute.
+
+If you want to enable videos on mobile as well, set `isMobile` to false or you can add your custom function.
 
 ## License
 

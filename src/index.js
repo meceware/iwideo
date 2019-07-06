@@ -22,7 +22,10 @@ export default ( ( global, document ) => {
     poster: '',
     zIndex: -1,
     autoResize: true,
-    isMobile: false,
+    isMobile: () => {
+      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/g.test(navigator.userAgent || navigator.vendor || global.opera);
+      return isMobile || ( global.innerWidth < 768 );
+    },
   };
 
   class iwideo {
@@ -102,12 +105,6 @@ export default ( ( global, document ) => {
       const parsed = parse( this.options.src );
       this.type = parsed.type;
       this.videoID = parsed.id;
-
-      // Initialize
-      const isMobile = (typeof this.options.isMobile === 'function') ? this.options.isMobile : () => {
-        const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/g.test(navigator.userAgent || navigator.vendor || global.opera);
-        return isMobile || ( global.innerWidth < 768 );
-      };
 
       // Generates a wrapper that is used for holding the media
       const constructWrapper = ( self = this ) => {
@@ -229,7 +226,7 @@ export default ( ( global, document ) => {
       // Add the wrapper
       constructWrapper();
       // Initialize provider
-      if ( ! isMobile() ) {
+      if ( ! ( self.options.isMobile && self.options.isMobile() ) ) {
         constructPlayer();
       }
 
