@@ -1,6 +1,6 @@
 {
   "name": "iwideo",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "No-dependencies library for displaying background videos. Supports self hosted videos, YouTube and Vimeo.",
   "author": {
     "name": "Mehmet Celik",

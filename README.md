@@ -43,6 +43,7 @@ The default options are
   loop: true,
   mute: true,
   poster: '',
+  posterStyle: { size: 'cover', position: 'center center', repeat: 'no-repeat', attachment: 'scroll' },
   zIndex: -1,
   autoResize: true,
   isMobile: () => {

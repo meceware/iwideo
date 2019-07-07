@@ -20,6 +20,7 @@ export default ( ( global, document ) => {
     loop: true,
     mute: true,
     poster: '',
+    posterStyle: { size: 'cover', position: 'center center', repeat: 'no-repeat', attachment: 'scroll' },
     zIndex: -1,
     autoResize: true,
     isMobile: () => {
@@ -140,9 +141,10 @@ export default ( ( global, document ) => {
         wrapper.style.zIndex = parseInt( self.options.zIndex, 10 );
 
         if ( self.options.poster ) {
-          wrapper.style.backgroundSize = 'cover';
-          wrapper.style.backgroundPosition = 'center center';
-          wrapper.style.backgroundRepeat = 'no-repeat';
+          wrapper.style.backgroundSize = self.options.posterStyle.size;
+          wrapper.style.backgroundPosition = self.options.posterStyle.position;
+          wrapper.style.backgroundRepeat = self.options.posterStyle.repeat;
+          wrapper.style.backgroundAttachment = self.options.posterStyle.attachment;
           wrapper.style.backgroundImage = `url('${self.options.poster}')`;
         }
 
