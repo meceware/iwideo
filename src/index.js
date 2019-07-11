@@ -29,6 +29,12 @@ export default ( ( global, document ) => {
     },
   };
 
+  const forEach = ( array, callback, scope ) => {
+    for ( let i = 0; i < array.length; i++ ) {
+      callback.call( scope, array[i] ); // passes back stuff we need
+    }
+  };
+
   class iwideo {
     constructor( element, options = {} ) {
       // Extend options
@@ -272,7 +278,7 @@ export default ( ( global, document ) => {
       // We wrap this next part in try...catch in case the element is already gone for some reason
       try {
         // Remove the node
-        this.wrapper.parentNode.removeChild( this.wrapper );
+        this.container.removeChild( this.wrapper );
         // Delete worker instance
         delete this.container.iwideo.worker;
         // Delete the instance
@@ -367,17 +373,15 @@ export default ( ( global, document ) => {
   }
 
   iwideo.destroy = () => {
-    [ ...document.querySelectorAll( '[data-iwideo-initialized]' ) ].forEach( (el) => {
-      // Get the element
-      el.iwideo.destroy( el );
-    } );
+    forEach( document.querySelectorAll( '[data-iwideo-initialized]' ), el => {
+      el.iwideo.destroy();
+    });
   };
 
   iwideo.resize = () => {
-    [ ...document.querySelectorAll( '[data-iwideo-initialized]' ) ].forEach( (el) => {
-      // Get the element
-      el.iwideo.resize( el );
-    } );
+    forEach( document.querySelectorAll( '[data-iwideo-initialized]' ), el => {
+      el.iwideo.resize();
+    });
   };
 
   // Provide method for scanning the DOM and initializing iwideo from attribute
@@ -385,7 +389,7 @@ export default ( ( global, document ) => {
     // API method for scanning the DOM and initializing vide instances from data-vide attribute
     // Scan the DOM for elements that have data-iwideo attribute and initialize new iwideo instance based on that attribute
     const scan = () => {
-      [...document.querySelectorAll( '[data-iwideo]' )].forEach( (el) => {
+      forEach( document.querySelectorAll( '[data-iwideo]' ), el => {
         // Get the element
         // Check if the element is already instantiated
         if ( 'undefined' !== typeof el.iwideo ) {

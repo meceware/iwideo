@@ -46,26 +46,6 @@
     return Constructor;
   }
 
-  function _toConsumableArray(arr) {
-    return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
-  }
-
-  function _arrayWithoutHoles(arr) {
-    if (Array.isArray(arr)) {
-      for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-
-      return arr2;
-    }
-  }
-
-  function _iterableToArray(iter) {
-    if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
-  }
-
-  function _nonIterableSpread() {
-    throw new TypeError("Invalid attempt to spread non-iterable instance");
-  }
-
   // Deferred
   // thanks http://stackoverflow.com/questions/18096715/implement-deferred-object-without-using-jquery
   function Deferred() {
@@ -651,6 +631,12 @@
       }
     };
 
+    var forEach = function forEach(array, callback, scope) {
+      for (var i = 0; i < array.length; i++) {
+        callback.call(scope, array[i]); // passes back stuff we need
+      }
+    };
+
     var iwideo =
     /*#__PURE__*/
     function () {
@@ -909,7 +895,7 @@
           // We wrap this next part in try...catch in case the element is already gone for some reason
           try {
             // Remove the node
-            this.wrapper.parentNode.removeChild(this.wrapper); // Delete worker instance
+            this.container.removeChild(this.wrapper); // Delete worker instance
 
             delete this.container.iwideo.worker; // Delete the instance
 
@@ -1011,16 +997,14 @@
     }();
 
     iwideo.destroy = function () {
-      _toConsumableArray(document.querySelectorAll('[data-iwideo-initialized]')).forEach(function (el) {
-        // Get the element
-        el.iwideo.destroy(el);
+      forEach(document.querySelectorAll('[data-iwideo-initialized]'), function (el) {
+        el.iwideo.destroy();
       });
     };
 
     iwideo.resize = function () {
-      _toConsumableArray(document.querySelectorAll('[data-iwideo-initialized]')).forEach(function (el) {
-        // Get the element
-        el.iwideo.resize(el);
+      forEach(document.querySelectorAll('[data-iwideo-initialized]'), function (el) {
+        el.iwideo.resize();
       });
     }; // Provide method for scanning the DOM and initializing iwideo from attribute
 
@@ -1029,7 +1013,7 @@
       // API method for scanning the DOM and initializing vide instances from data-vide attribute
       // Scan the DOM for elements that have data-iwideo attribute and initialize new iwideo instance based on that attribute
       var scan = function scan() {
-        _toConsumableArray(document.querySelectorAll('[data-iwideo]')).forEach(function (el) {
+        forEach(document.querySelectorAll('[data-iwideo]'), function (el) {
           // Get the element
           // Check if the element is already instantiated
           if ('undefined' !== typeof el.iwideo) {
