@@ -87,7 +87,7 @@ export default class YouTubeVW {
       };
 
       // Create a temporary dom element that will be replaced by the YouTube iframe
-      let toBeReplaced = document.createElement( 'div' );
+      const toBeReplaced = document.createElement( 'div' );
       // Append the element to the wrapper
       wrapper.appendChild( toBeReplaced );
       self.player = new YT.Player( toBeReplaced, playerOptions );

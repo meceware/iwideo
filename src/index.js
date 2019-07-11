@@ -53,10 +53,21 @@ export default ( ( global, document ) => {
         return new Error( `Could not find the container: ${element}` );
       }
 
-      // Store the instance in the container
-      this.container.iwideo = this;
-
       const parse = ( url ) => {
+        const undef = { type: false, id: false };
+        if ( !url ) {
+          return undef;
+        }
+
+        // If the type of url is object, then it should be local. Remaining code accepts only string
+        if ( typeof url === 'object' ) {
+          if ( Object.prototype.hasOwnProperty.call( url, 'mp4' ) || Object.prototype.hasOwnProperty.call( url, 'ogv' ) || Object.prototype.hasOwnProperty.call( url, 'ogg' ) || Object.prototype.hasOwnProperty.call( url, 'webm' ) ) {
+            return { type: 'html5', id: url };
+          }
+
+          return undef;
+        }
+
         // parse youtube ID
         const idYoutube = ( ( url ) => {
           // eslint-disable-next-line no-useless-escape
@@ -93,13 +104,17 @@ export default ( ( global, document ) => {
 
         if ( idYoutube ) {
           return { type: 'youtube', id: idYoutube };
-        } else if ( idVimeo ) {
+        }
+
+        if ( idVimeo ) {
           return { type: 'vimeo', id: idVimeo };
-        } else if ( idLocal ) {
+        }
+
+        if ( idLocal ) {
           return { type: 'html5', id: idLocal };
         }
 
-        return { type: false, id: false };
+        return undef;
       };
 
       // Parse the source and get video ID
@@ -154,7 +169,7 @@ export default ( ( global, document ) => {
 
       // Generates an overlay that is placed above the media to prevent interaction
       const constructOverlay = ( self = this ) => {
-        let overlay = document.createElement( 'div' );
+        const overlay = document.createElement( 'div' );
         overlay.style.position = 'absolute';
         if ( self.options.overlayClass ) {
           if ( 'function' === typeof self.options.overlayClass ) {
@@ -228,7 +243,7 @@ export default ( ( global, document ) => {
       // Add the wrapper
       constructWrapper();
       // Initialize provider
-      if ( ! ( self.options.isMobile && self.options.isMobile() ) ) {
+      if ( this.type && ! ( this.options.isMobile && this.options.isMobile() ) ) {
         constructPlayer();
       }
 
@@ -246,6 +261,10 @@ export default ( ( global, document ) => {
 
       // Resize
       this.resize();
+
+      // Store the instance in the container
+      this.container.iwideo = this;
+      this.container.setAttribute( 'data-iwideo-initialized', true );
     }
 
     // Destroys and unloads the player
@@ -339,23 +358,25 @@ export default ( ( global, document ) => {
     fire( name ) {
       const args = [].slice.call( arguments, 1 );
       if ( this.userEventsList && typeof this.userEventsList[name] !== 'undefined' ) {
-        this.userEventsList[name].forEach( function(val) {
-          val && val.apply(this, args);
+        const self = this;
+        self.userEventsList[name].forEach( function(val) {
+          val && val.apply(self, args);
         } );
       }
     }
   }
 
-  // Provide method for deleting the instance from instances hash
-  iwideo.destroy = ( element ) => {
-    element = ( 'string' === typeof element ) ? document.querySelector( element ) : element;
-    element.iwideo && element.iwideo.destroy();
+  iwideo.destroy = () => {
+    [ ...document.querySelectorAll( '[data-iwideo-initialized]' ) ].forEach( (el) => {
+      // Get the element
+      el.iwideo.destroy( el );
+    } );
   };
 
-  iwideo.destroyAll = () => {
-    [...document.querySelectorAll( '[data-iwideo]' )].forEach( (el) => {
+  iwideo.resize = () => {
+    [ ...document.querySelectorAll( '[data-iwideo-initialized]' ) ].forEach( (el) => {
       // Get the element
-      iwideo.destroy( el );
+      el.iwideo.resize( el );
     } );
   };
 

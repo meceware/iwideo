@@ -1,5 +1,5 @@
 /* 
- * iwideo v1.0.1
+ * iwideo v1.0.2
  * https://github.com/meceware/iwideo 
  * 
  * Made by Mehmet Celik (https://www.meceware.com/) 
@@ -679,13 +679,31 @@
 
         if (!this.container) {
           return new Error("Could not find the container: ".concat(element));
-        } // Store the instance in the container
-
-
-        this.container.iwideo = this;
+        }
 
         var parse = function parse(url) {
-          // parse youtube ID
+          var undef = {
+            type: false,
+            id: false
+          };
+
+          if (!url) {
+            return undef;
+          } // If the type of url is object, then it should be local. Remaining code accepts only string
+
+
+          if (_typeof(url) === 'object') {
+            if (Object.prototype.hasOwnProperty.call(url, 'mp4') || Object.prototype.hasOwnProperty.call(url, 'ogv') || Object.prototype.hasOwnProperty.call(url, 'ogg') || Object.prototype.hasOwnProperty.call(url, 'webm')) {
+              return {
+                type: 'html5',
+                id: url
+              };
+            }
+
+            return undef;
+          } // parse youtube ID
+
+
           var idYoutube = function (url) {
             // eslint-disable-next-line no-useless-escape
             var regExp = /.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
@@ -725,22 +743,23 @@
               type: 'youtube',
               id: idYoutube
             };
-          } else if (idVimeo) {
+          }
+
+          if (idVimeo) {
             return {
               type: 'vimeo',
               id: idVimeo
             };
-          } else if (idLocal) {
+          }
+
+          if (idLocal) {
             return {
               type: 'html5',
               id: idLocal
             };
           }
 
-          return {
-            type: false,
-            id: false
-          };
+          return undef;
         }; // Parse the source and get video ID
 
 
@@ -865,7 +884,7 @@
 
         constructWrapper(); // Initialize provider
 
-        if (!(self.options.isMobile && self.options.isMobile())) {
+        if (this.type && !(this.options.isMobile && this.options.isMobile())) {
           constructPlayer();
         } // Add the overlay
 
@@ -877,7 +896,10 @@
         } // Resize
 
 
-        this.resize();
+        this.resize(); // Store the instance in the container
+
+        this.container.iwideo = this;
+        this.container.setAttribute('data-iwideo-initialized', true);
       } // Destroys and unloads the player
 
 
@@ -977,26 +999,28 @@
           var args = [].slice.call(arguments, 1);
 
           if (this.userEventsList && typeof this.userEventsList[name] !== 'undefined') {
-            this.userEventsList[name].forEach(function (val) {
-              val && val.apply(this, args);
+            var self = this;
+            self.userEventsList[name].forEach(function (val) {
+              val && val.apply(self, args);
             });
           }
         }
       }]);
 
       return iwideo;
-    }(); // Provide method for deleting the instance from instances hash
+    }();
 
-
-    iwideo.destroy = function (element) {
-      element = 'string' === typeof element ? document.querySelector(element) : element;
-      element.iwideo && element.iwideo.destroy();
+    iwideo.destroy = function () {
+      _toConsumableArray(document.querySelectorAll('[data-iwideo-initialized]')).forEach(function (el) {
+        // Get the element
+        el.iwideo.destroy(el);
+      });
     };
 
-    iwideo.destroyAll = function () {
-      _toConsumableArray(document.querySelectorAll('[data-iwideo]')).forEach(function (el) {
+    iwideo.resize = function () {
+      _toConsumableArray(document.querySelectorAll('[data-iwideo-initialized]')).forEach(function (el) {
         // Get the element
-        iwideo.destroy(el);
+        el.iwideo.resize(el);
       });
     }; // Provide method for scanning the DOM and initializing iwideo from attribute
 
