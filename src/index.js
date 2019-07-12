@@ -303,12 +303,12 @@ export default ( ( global, document ) => {
 
       if ( isPortrait ) {
         this.el.style.maxHeight = '100%';
-        this.el.style.maxWidth = '';
+        this.el.style.maxWidth = 'none';
 
         this.el.style.height = '';
         this.el.style.width = ( this.el.offsetHeight * this.options.ratio ) + 200 + 'px';
       } else {
-        this.el.style.maxHeight = '';
+        this.el.style.maxHeight = 'none';
         this.el.style.maxWidth = '100%';
 
         this.el.style.height = this.el.offsetWidth / this.options.ratio + 'px';
