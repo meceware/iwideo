@@ -1,5 +1,5 @@
 /* 
- * iwideo v1.1.1
+ * iwideo v1.1.2
  * https://github.com/meceware/iwideo 
  * 
  * Made by Mehmet Celik (https://www.meceware.com/) 
