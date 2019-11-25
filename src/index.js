@@ -149,7 +149,7 @@ export default ( ( global, document ) => {
           if ( 'function' === typeof self.options.wrapperClass ) {
             wrapper.classList.add( self.options.wrapperClass.call( self ) );
           } else {
-            wrapper.classList.add( self.options.wrapperClass );
+            wrapper.classList.add.apply( wrapper.classList, self.options.wrapperClass.split(/[ ,]+/) );
           }
         }
 
@@ -181,7 +181,7 @@ export default ( ( global, document ) => {
           if ( 'function' === typeof self.options.overlayClass ) {
             overlay.classList.add( self.options.overlayClass.call( self ) );
           } else {
-            overlay.classList.add( self.options.overlayClass );
+            overlay.classList.add.apply( overlay.classList, self.options.overlayClass.split(/[ ,]+/) );
           }
         }
 

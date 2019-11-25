@@ -1,5 +1,5 @@
 /* 
- * iwideo v1.1.2
+ * iwideo v1.1.3
  * https://github.com/meceware/iwideo 
  * 
  * Made by Mehmet Celik (https://www.meceware.com/) 
@@ -8,7 +8,7 @@
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
   (global = global || self, global.iwideo = factory());
-}(this, function () { 'use strict';
+}(this, (function () { 'use strict';
 
   function _typeof(obj) {
     if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
@@ -771,7 +771,7 @@
             if ('function' === typeof self.options.wrapperClass) {
               wrapper.classList.add(self.options.wrapperClass.call(self));
             } else {
-              wrapper.classList.add(self.options.wrapperClass);
+              wrapper.classList.add.apply(wrapper.classList, self.options.wrapperClass.split(/[ ,]+/));
             }
           } // Set wrapper styles
 
@@ -805,7 +805,7 @@
             if ('function' === typeof self.options.overlayClass) {
               overlay.classList.add(self.options.overlayClass.call(self));
             } else {
-              overlay.classList.add(self.options.overlayClass);
+              overlay.classList.add.apply(overlay.classList, self.options.overlayClass.split(/[ ,]+/));
             }
           }
 
@@ -1042,4 +1042,4 @@
 
   return index;
 
-}));
+})));
