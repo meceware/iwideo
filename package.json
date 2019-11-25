@@ -1,6 +1,6 @@
 {
   "name": "iwideo",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "No-dependencies library for displaying background videos. Supports self hosted videos, YouTube and Vimeo.",
   "author": {
     "name": "Mehmet Celik",
@@ -20,18 +20,18 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
+    "@babel/core": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
     "@babel/preset-es2015": "^7.0.0-beta.53",
     "del": "^5.1.0",
     "gulp": "^4.0.2",
     "gzip-size": "^5.1.1",
-    "rollup": "^1.20.2",
+    "rollup": "^1.27.5",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-eslint": "^7.0.0",
     "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-terser": "^5.1.1",
+    "rollup-plugin-terser": "^5.1.2",
     "throttle-debounce": "^2.1.0"
   },
   "dependencies": {}
