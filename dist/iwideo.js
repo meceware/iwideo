@@ -1,5 +1,5 @@
 /* 
- * iwideo v1.1.3
+ * iwideo v1.1.4
  * https://github.com/meceware/iwideo 
  * 
  * Made by Mehmet Celik (https://www.meceware.com/) 
@@ -11,6 +11,8 @@
 }(this, (function () { 'use strict';
 
   function _typeof(obj) {
+    "@babel/helpers - typeof";
+
     if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
       _typeof = function (obj) {
         return typeof obj;
@@ -80,9 +82,7 @@
   var loadingYoutubePlayer = false;
   var loadingYoutubeDefer = new Deferred();
 
-  var YouTubeVW =
-  /*#__PURE__*/
-  function () {
+  var YouTubeVW = /*#__PURE__*/function () {
     function YouTubeVW(global, document, id, wrapper, options) {
       var _this = this;
 
@@ -219,9 +219,7 @@
   var loadingVimeoPlayer = 0;
   var loadingVimeoDefer = new Deferred();
 
-  var VimeoVW =
-  /*#__PURE__*/
-  function () {
+  var VimeoVW = /*#__PURE__*/function () {
     function VimeoVW(document, id, wrapper, options) {
       var _this = this;
 
@@ -357,9 +355,7 @@
     return VimeoVW;
   }();
 
-  var HTML5VW =
-  /*#__PURE__*/
-  function () {
+  var HTML5VW = /*#__PURE__*/function () {
     function HTML5VW(document, id, wrapper, options) {
       var events = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
 
@@ -637,9 +633,7 @@
       }
     };
 
-    var iwideo =
-    /*#__PURE__*/
-    function () {
+    var iwideo = /*#__PURE__*/function () {
       function iwideo(element) {
         var _this = this;
 
@@ -907,6 +901,8 @@
       }, {
         key: "resize",
         value: function resize() {
+          var _this2 = this;
+
           // If there is no element, return
           if (!this.el) {
             return;
@@ -917,10 +913,16 @@
           var isPortrait = 1 < this.options.ratio && containerWidth / containerHeight < this.options.ratio || 1 > this.options.ratio && containerHeight / containerWidth < this.options.ratio;
 
           if (isPortrait) {
+            var val = parseInt(this.el.offsetHeight * this.options.ratio) + 200;
             this.el.style.maxHeight = '100%';
             this.el.style.maxWidth = 'none';
             this.el.style.height = '';
-            this.el.style.width = this.el.offsetHeight * this.options.ratio + 200 + 'px';
+            this.el.style.width = val + 'px'; // Somehow Firefox does not set width the first time it creates. This timeout seems to be solving the issue.
+
+            setTimeout(function () {
+              var self = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this2;
+              self.el.style.width = val + 'px';
+            }, 10);
           } else {
             this.el.style.maxHeight = 'none';
             this.el.style.maxWidth = '100%';
@@ -963,7 +965,7 @@
       }, {
         key: "off",
         value: function off(name, callback) {
-          var _this2 = this;
+          var _this3 = this;
 
           if (!this.userEventsList || !this.userEventsList[name]) {
             return;
@@ -974,7 +976,7 @@
           } else {
             this.userEventsList[name].forEach(function (val, key) {
               if (val === callback) {
-                _this2.userEventsList[name][key] = false;
+                _this3.userEventsList[name][key] = false;
               }
             });
           }

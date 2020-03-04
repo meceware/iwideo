@@ -37,6 +37,7 @@
         "prefer-numeric-literals": "error",
         "curly": "error",
         "no-invalid-this": "error",
-        "no-redeclare": "error"
+        "no-redeclare": "error",
+        "no-debugger": "warn"
     }
 }

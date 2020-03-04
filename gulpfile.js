@@ -8,6 +8,7 @@ const { eslint } = require( 'rollup-plugin-eslint' );
 const { terser } = require( 'rollup-plugin-terser' );
 const package = require( './package.json' );
 const gzipSize = require('gzip-size');
+const serve = require( 'rollup-plugin-serve' );
 
 function dev() {
   const devBuild = () => {
@@ -19,7 +20,12 @@ function dev() {
         commonjs(),
         babel({
           exclude: 'node_modules/**'
-        })
+        }),
+        serve( {
+          contentBase: [ 'docs', 'dist' ],
+          host: 'localhost',
+          port: 10001,
+        } ),
       ]
     } ).then( function( bundle ) {
       return bundle.write( {

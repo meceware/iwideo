@@ -302,11 +302,17 @@ export default ( ( global, document ) => {
                           ( 1 > this.options.ratio && ( containerHeight / containerWidth ) < this.options.ratio ) );
 
       if ( isPortrait ) {
+        const val = parseInt( this.el.offsetHeight * this.options.ratio ) + 200;
         this.el.style.maxHeight = '100%';
         this.el.style.maxWidth = 'none';
 
         this.el.style.height = '';
-        this.el.style.width = ( this.el.offsetHeight * this.options.ratio ) + 200 + 'px';
+        this.el.style.width = val + 'px';
+
+        // Somehow Firefox does not set width the first time it creates. This timeout seems to be solving the issue.
+        setTimeout( ( self = this ) => {
+          self.el.style.width = val + 'px';
+        }, 10);
       } else {
         this.el.style.maxHeight = 'none';
         this.el.style.maxWidth = '100%';
