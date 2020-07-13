@@ -1,5 +1,5 @@
 /* 
- * iwideo v1.1.6
+ * iwideo v1.1.7
  * https://github.com/meceware/iwideo 
  * 
  * Made by Mehmet Celik (https://www.meceware.com/) 
@@ -458,17 +458,17 @@
    * Throttle execution of a function. Especially useful for rate limiting
    * execution of handlers on events like resize and scroll.
    *
-   * @param  {Number}    delay          A zero-or-greater delay in milliseconds. For event callbacks, values around 100 or 250 (or even higher) are most useful.
-   * @param  {Boolean}   [noTrailing]   Optional, defaults to false. If noTrailing is true, callback will only execute every `delay` milliseconds while the
+   * @param  {number}    delay -          A zero-or-greater delay in milliseconds. For event callbacks, values around 100 or 250 (or even higher) are most useful.
+   * @param  {boolean}   [noTrailing] -   Optional, defaults to false. If noTrailing is true, callback will only execute every `delay` milliseconds while the
    *                                    throttled-function is being called. If noTrailing is false or unspecified, callback will be executed one final time
    *                                    after the last throttled-function call. (After the throttled-function has not been called for `delay` milliseconds,
-   *                                    the internal counter is reset)
-   * @param  {Function}  callback       A function to be executed after delay milliseconds. The `this` context and all arguments are passed through, as-is,
+   *                                    the internal counter is reset).
+   * @param  {Function}  callback -       A function to be executed after delay milliseconds. The `this` context and all arguments are passed through, as-is,
    *                                    to `callback` when the throttled-function is executed.
-   * @param  {Boolean}   [debounceMode] If `debounceMode` is true (at begin), schedule `clear` to execute after `delay` ms. If `debounceMode` is false (at end),
+   * @param  {boolean}   [debounceMode] - If `debounceMode` is true (at begin), schedule `clear` to execute after `delay` ms. If `debounceMode` is false (at end),
    *                                    schedule `callback` to execute after `delay` ms.
    *
-   * @return {Function}  A new, throttled, function.
+   * @returns {Function}  A new, throttled, function.
    */
   function throttle (delay, noTrailing, callback, debounceMode) {
     /*
@@ -507,9 +507,12 @@
 
 
     function wrapper() {
+      for (var _len = arguments.length, arguments_ = new Array(_len), _key = 0; _key < _len; _key++) {
+        arguments_[_key] = arguments[_key];
+      }
+
       var self = this;
       var elapsed = Date.now() - lastExec;
-      var args = arguments;
 
       if (cancelled) {
         return;
@@ -518,7 +521,7 @@
 
       function exec() {
         lastExec = Date.now();
-        callback.apply(self, args);
+        callback.apply(self, arguments_);
       }
       /*
        * If `debounceMode` is true (at begin) this is used to clear the flag
@@ -573,27 +576,28 @@
    * guarantees that a function is only executed a single time, either at the
    * very beginning of a series of calls, or at the very end.
    *
-   * @param  {Number}   delay         A zero-or-greater delay in milliseconds. For event callbacks, values around 100 or 250 (or even higher) are most useful.
-   * @param  {Boolean}  [atBegin]     Optional, defaults to false. If atBegin is false or unspecified, callback will only be executed `delay` milliseconds
+   * @param  {number}   delay -         A zero-or-greater delay in milliseconds. For event callbacks, values around 100 or 250 (or even higher) are most useful.
+   * @param  {boolean}  [atBegin] -     Optional, defaults to false. If atBegin is false or unspecified, callback will only be executed `delay` milliseconds
    *                                  after the last debounced-function call. If atBegin is true, callback will be executed only at the first debounced-function call.
    *                                  (After the throttled-function has not been called for `delay` milliseconds, the internal counter is reset).
-   * @param  {Function} callback      A function to be executed after delay milliseconds. The `this` context and all arguments are passed through, as-is,
+   * @param  {Function} callback -      A function to be executed after delay milliseconds. The `this` context and all arguments are passed through, as-is,
    *                                  to `callback` when the debounced-function is executed.
    *
-   * @return {Function} A new, debounced function.
+   * @returns {Function} A new, debounced function.
    */
 
   function debounce (delay, atBegin, callback) {
     return callback === undefined ? throttle(delay, atBegin, false) : throttle(delay, callback, atBegin !== false);
   }
 
-  exports.throttle = throttle;
   exports.debounce = debounce;
+  exports.throttle = throttle;
+
   });
 
   unwrapExports(index_cjs);
-  var index_cjs_1 = index_cjs.throttle;
-  var index_cjs_2 = index_cjs.debounce;
+  var index_cjs_1 = index_cjs.debounce;
+  var index_cjs_2 = index_cjs.throttle;
 
   var index = (function (global, document) {
     // If the global wrapper (window) is undefined, do nothing
@@ -872,7 +876,7 @@
         constructOverlay(); // Add resize event
 
         if (this.options.autoResize) {
-          global.addEventListener('resize', index_cjs_1(200, this.resize).bind(this), false);
+          global.addEventListener('resize', index_cjs_2(200, this.resize).bind(this), false);
         } // Resize
 
 
