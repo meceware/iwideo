@@ -1,5 +1,5 @@
 /* 
- * iwideo v1.1.7
+ * iwideo v1.1.8
  * https://github.com/meceware/iwideo 
  * 
  * Made by Mehmet Celik (https://www.meceware.com/) 
@@ -7,7 +7,7 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global = global || self, global.iwideo = factory());
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.iwideo = factory());
 }(this, (function () { 'use strict';
 
   function _typeof(obj) {
@@ -448,7 +448,7 @@
   	return module = { exports: {} }, fn(module, module.exports), module.exports;
   }
 
-  var index_cjs = createCommonjsModule(function (module, exports) {
+  var cjs = createCommonjsModule(function (module, exports) {
 
   Object.defineProperty(exports, '__esModule', { value: true });
 
@@ -595,9 +595,9 @@
 
   });
 
-  unwrapExports(index_cjs);
-  var index_cjs_1 = index_cjs.debounce;
-  var index_cjs_2 = index_cjs.throttle;
+  unwrapExports(cjs);
+  cjs.debounce;
+  var cjs_2 = cjs.throttle;
 
   var index = (function (global, document) {
     // If the global wrapper (window) is undefined, do nothing
@@ -876,7 +876,7 @@
         constructOverlay(); // Add resize event
 
         if (this.options.autoResize) {
-          global.addEventListener('resize', index_cjs_2(200, this.resize).bind(this), false);
+          global.addEventListener('resize', cjs_2(200, this.resize).bind(this), false);
         } // Resize
 
 
