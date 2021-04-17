@@ -20,14 +20,14 @@ export default class YouTubeVW {
 
     const onReady = callback => {
       // Listen for global YT player callback
-      if ( ( typeof YT === 'undefined' || YT.loaded === 0 ) && !loadingYoutubePlayer ) {
+      if ( ( typeof YT === 'undefined' || YT.loaded === 0 ) && ! loadingYoutubePlayer ) {
         // Prevents Ready event from being called twice
         loadingYoutubePlayer = true;
 
         // Creates deferred so, other players know when to wait.
-        global.onYouTubeIframeAPIReady = function () {
+        global.onYouTubeIframeAPIReady = function() {
           global.onYouTubeIframeAPIReady = null;
-          loadingYoutubeDefer.resolve('done');
+          loadingYoutubeDefer.resolve( 'done' );
           callback();
         };
       } else if ( typeof YT === 'object' && YT.loaded === 1 ) {
@@ -53,7 +53,7 @@ export default class YouTubeVW {
           loop: options.loop ? 1 : 0,
           playlist: id,
           modestbranding: 1,
-          origin: typeof global.location.origin !== 'undefined' ? global.location.origin : `${global.location.protocol}//${global.location.hostname}${(global.location.port ? ':' + global.location.port : '')}`,
+          origin: typeof global.location.origin !== 'undefined' ? global.location.origin : `${ global.location.protocol }//${ global.location.hostname }${ ( global.location.port ? ':' + global.location.port : '' ) }`,
           playsinline: 1,
           rel: 0,
           start: 0,
@@ -61,29 +61,37 @@ export default class YouTubeVW {
           widgetid: 1,
         },
         events: {
-          'onReady': e => {
+          onReady: e => {
             if ( options.mute ) {
               self.player.mute();
             }
 
-            events[ 'ready' ] && events[ 'ready' ]( e );
+            if ( events[ 'ready' ] ) {
+              events[ 'ready' ]( e );
+            }
           },
-          'onStateChange': e => {
+          onStateChange: e => {
             switch ( e.data ) {
               case ( YT.PlayerState.ENDED ) :
-                events[ 'end' ] && events[ 'end' ]( e );
+                if ( events[ 'end' ] ) {
+                  events[ 'end' ]( e );
+                }
                 break;
 
               case ( YT.PlayerState.PLAYING ) :
-                events[ 'play' ] && events[ 'play' ]( e );
+                if ( events[ 'play' ] ) {
+                  events[ 'play' ]( e );
+                }
                 break;
 
               case ( YT.PlayerState.PAUSED ) :
-                events[ 'pause' ] && events[ 'pause' ]( e );
+                if ( events[ 'pause' ] ) {
+                  events[ 'pause' ]( e );
+                }
                 break;
             }
-          }
-        }
+          },
+        },
       };
 
       // Create a temporary dom element that will be replaced by the YouTube iframe
@@ -91,16 +99,18 @@ export default class YouTubeVW {
       // Append the element to the wrapper
       wrapper.appendChild( toBeReplaced );
       self.player = new YT.Player( toBeReplaced, playerOptions );
-      events['create'] && events['create']( self.player.getIframe() );
+      if ( events[ 'create' ] ) {
+        events[ 'create' ]( self.player.getIframe() );
+      }
     } );
   }
 
   isValid() {
-    return !!this.id;
+    return ! ! this.id;
   }
 
   play( start ) {
-    if ( !this.player ) {
+    if ( ! this.player ) {
       return;
     }
 
@@ -113,7 +123,7 @@ export default class YouTubeVW {
   }
 
   pause() {
-    if ( !this.player ) {
+    if ( ! this.player ) {
       return;
     }
 

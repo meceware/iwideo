@@ -5,24 +5,24 @@ function Deferred() {
   this._fail = [];
 }
 Deferred.prototype = {
-  execute(list, args) {
+  execute( list, args ) {
     let i = list.length;
-    args = Array.prototype.slice.call(args);
-    while (i--) {
-      list[i].apply(null, args);
+    args = Array.prototype.slice.call( args );
+    while ( i-- ) {
+      list[ i ].apply( null, args );
     }
   },
   resolve() {
-    this.execute(this._done, arguments);
+    this.execute( this._done, arguments );
   },
   reject() {
-    this.execute(this._fail, arguments);
+    this.execute( this._fail, arguments );
   },
-  done(callback) {
-    this._done.push(callback);
+  done( callback ) {
+    this._done.push( callback );
   },
-  fail(callback) {
-    this._fail.push(callback);
+  fail( callback ) {
+    this._fail.push( callback );
   },
 };
 

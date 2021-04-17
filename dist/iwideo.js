@@ -1,5 +1,5 @@
 /* 
- * iwideo v1.1.8
+ * iwideo v1.1.9
  * https://github.com/meceware/iwideo 
  * 
  * Made by Mehmet Celik (https://www.meceware.com/) 
@@ -146,25 +146,36 @@
             widgetid: 1
           },
           events: {
-            'onReady': function onReady(e) {
+            onReady: function onReady(e) {
               if (options.mute) {
                 self.player.mute();
               }
 
-              events['ready'] && events['ready'](e);
+              if (events['ready']) {
+                events['ready'](e);
+              }
             },
-            'onStateChange': function onStateChange(e) {
+            onStateChange: function onStateChange(e) {
               switch (e.data) {
                 case YT.PlayerState.ENDED:
-                  events['end'] && events['end'](e);
+                  if (events['end']) {
+                    events['end'](e);
+                  }
+
                   break;
 
                 case YT.PlayerState.PLAYING:
-                  events['play'] && events['play'](e);
+                  if (events['play']) {
+                    events['play'](e);
+                  }
+
                   break;
 
                 case YT.PlayerState.PAUSED:
-                  events['pause'] && events['pause'](e);
+                  if (events['pause']) {
+                    events['pause'](e);
+                  }
+
                   break;
               }
             }
@@ -175,7 +186,10 @@
 
         wrapper.appendChild(toBeReplaced);
         self.player = new YT.Player(toBeReplaced, playerOptions);
-        events['create'] && events['create'](self.player.getIframe());
+
+        if (events['create']) {
+          events['create'](self.player.getIframe());
+        }
       });
     }
 
@@ -283,7 +297,7 @@
             optionsStr += '&';
           }
 
-          optionsStr += "".concat(key, "=").concat(encodeURIComponent(playerOptions[key]));
+          optionsStr += "".concat(key, " = ").concat(encodeURIComponent(playerOptions[key]));
         }); // Create the Vimeo iframe
 
         var iframe = document.createElement('iframe');
@@ -294,19 +308,31 @@
         iframe.setAttribute('allowfullscreen', ''); // Append the element to the wrapper
 
         wrapper.appendChild(iframe);
-        events['create'] && events['create'](iframe);
+
+        if (events['create']) {
+          events['create'](iframe);
+        }
+
         self.player = new Vimeo.Player(iframe, playerOptions);
         self.player.on('play', function (e) {
-          events['play'] && events['play'](e);
+          if (events['play']) {
+            events['play'](e);
+          }
         });
         self.player.on('pause', function (e) {
-          events['pause'] && events['pause'](e);
+          if (events['pause']) {
+            events['pause'](e);
+          }
         });
         self.player.on('ended', function (e) {
-          events['end'] && events['end'](e);
+          if (events['end']) {
+            events['end'](e);
+          }
         });
         self.player.on('loaded', function (e) {
-          events['ready'] && events['ready'](e);
+          if (events['ready']) {
+            events['ready'](e);
+          }
         });
       });
     }
@@ -384,19 +410,31 @@
       });
       this.player = player;
       wrapper.appendChild(player);
-      events['create'] && events['create'](player);
+
+      if (events['create']) {
+        events['create'](player);
+      }
+
       player.addEventListener('play', function (e) {
-        events['play'] && events['play'](e);
+        if (events['play']) {
+          events['play'](e);
+        }
       });
       player.addEventListener('pause', function (e) {
-        events['pause'] && events['pause'](e);
+        if (events['pause']) {
+          events['pause'](e);
+        }
       });
       player.addEventListener('ended', function (e) {
-        events['end'] && events['end'](e);
+        if (events['end']) {
+          events['end'](e);
+        }
       });
       player.addEventListener('loadedmetadata', function () {
-        events['ready'] && events['ready'](); // TODO
-        // autoplay
+        if (events['ready']) {
+          events['ready']();
+        } // autoplay
+
 
         if (options.autoplay) {
           player.play();
@@ -439,18 +477,6 @@
 
     return HTML5VW;
   }();
-
-  function unwrapExports (x) {
-  	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
-  }
-
-  function createCommonjsModule(fn, module) {
-  	return module = { exports: {} }, fn(module, module.exports), module.exports;
-  }
-
-  var cjs = createCommonjsModule(function (module, exports) {
-
-  Object.defineProperty(exports, '__esModule', { value: true });
 
   /* eslint-disable no-undefined,no-param-reassign,no-shadow */
 
@@ -570,35 +596,6 @@
     return wrapper;
   }
 
-  /* eslint-disable no-undefined */
-  /**
-   * Debounce execution of a function. Debouncing, unlike throttling,
-   * guarantees that a function is only executed a single time, either at the
-   * very beginning of a series of calls, or at the very end.
-   *
-   * @param  {number}   delay -         A zero-or-greater delay in milliseconds. For event callbacks, values around 100 or 250 (or even higher) are most useful.
-   * @param  {boolean}  [atBegin] -     Optional, defaults to false. If atBegin is false or unspecified, callback will only be executed `delay` milliseconds
-   *                                  after the last debounced-function call. If atBegin is true, callback will be executed only at the first debounced-function call.
-   *                                  (After the throttled-function has not been called for `delay` milliseconds, the internal counter is reset).
-   * @param  {Function} callback -      A function to be executed after delay milliseconds. The `this` context and all arguments are passed through, as-is,
-   *                                  to `callback` when the debounced-function is executed.
-   *
-   * @returns {Function} A new, debounced function.
-   */
-
-  function debounce (delay, atBegin, callback) {
-    return callback === undefined ? throttle(delay, atBegin, false) : throttle(delay, callback, atBegin !== false);
-  }
-
-  exports.debounce = debounce;
-  exports.throttle = throttle;
-  //# sourceMappingURL=index.js.map
-  });
-
-  unwrapExports(cjs);
-  cjs.debounce;
-  var cjs_2 = cjs.throttle;
-
   var index = (function (global, document) {
     // If the global wrapper (window) is undefined, do nothing
     if ('undefined' === typeof global.document) {
@@ -688,25 +685,25 @@
           } // parse youtube ID
 
 
-          var idYoutube = function (url) {
+          var idYoutube = function (link) {
             // eslint-disable-next-line no-useless-escape
             var regExp = /.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
-            var match = url.match(regExp);
+            var match = link.match(regExp);
             return match && match[1].length === 11 ? match[1] : false;
           }(url); // parse vimeo ID
 
 
-          var idVimeo = function (url) {
+          var idVimeo = function (link) {
             // eslint-disable-next-line no-useless-escape
             var regExp = /https?:\/\/(?:www\.|player\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)(?:$|\/|\?)/;
-            var match = url.match(regExp);
+            var match = link.match(regExp);
             return match && match[3] ? match[3] : false;
           }(url); // parse local string
 
 
-          var idLocal = function (url) {
+          var idLocal = function (link) {
             // eslint-disable-next-line no-useless-escape
-            var videoFormats = url.split(/,(?=mp4\:|webm\:|ogv\:|ogg\:)/);
+            var videoFormats = link.split(/,(?=mp4\:|webm\:|ogv\:|ogg\:)/);
             var result = {};
             var ready = 0;
             videoFormats.forEach(function (val) {
@@ -817,24 +814,24 @@
         var constructPlayer = function constructPlayer() {
           var self = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this;
           var events = {
-            'ready': function ready() {
+            ready: function ready() {
               self.fire('ready', self);
             },
-            'play': function play(e) {
+            play: function play(e) {
               self.el.style.opacity = '1';
               self.fire('play', self, e);
             },
-            'pause': function pause(e) {
+            pause: function pause(e) {
               self.fire('pause', self, e);
             },
-            'end': function end(e) {
+            end: function end(e) {
               if (!self.options.loop) {
                 self.el.style.opacity = '0';
               }
 
               self.fire('end', self, e);
             },
-            'create': function create(video) {
+            create: function create(video) {
               video.style.position = 'absolute';
               video.style.left = '50%';
               video.style.top = '50%';
@@ -846,9 +843,13 @@
               video.style.minWidth = '100%';
               video.style.minHeight = '100%';
               video.style.opacity = '0';
-              self.options.extra && Object.keys(self.options.extra).forEach(function (key) {
-                video.setAttribute(key, self.options.extra[key]);
-              });
+
+              if (self.options.extra) {
+                Object.keys(self.options.extra).forEach(function (key) {
+                  video.setAttribute(key, self.options.extra[key]);
+                });
+              }
+
               self.el = video; // Resize the frame
 
               self.resize();
@@ -876,7 +877,7 @@
         constructOverlay(); // Add resize event
 
         if (this.options.autoResize) {
-          global.addEventListener('resize', cjs_2(200, this.resize).bind(this), false);
+          global.addEventListener('resize', throttle(200, this.resize).bind(this), false);
         } // Resize
 
 
@@ -942,14 +943,20 @@
       }, {
         key: "play",
         value: function play() {
-          this.worker && this.worker.play();
+          if (this.worker) {
+            this.worker.play();
+          }
+
           return this;
         } // Pauses the video playback
 
       }, {
         key: "pause",
         value: function pause() {
-          this.worker && this.worker.pause();
+          if (this.worker) {
+            this.worker.pause();
+          }
+
           return this;
         } // Hides the media and shows the poster behind it
 
@@ -993,7 +1000,9 @@
           if (this.userEventsList && typeof this.userEventsList[name] !== 'undefined') {
             var self = this;
             self.userEventsList[name].forEach(function (val) {
-              val && val.apply(self, args);
+              if (val) {
+                val.apply(self, args);
+              }
             });
           }
         }
@@ -1034,7 +1043,7 @@
         });
       };
 
-      if (document.readyState != 'loading') {
+      if (document.readyState !== 'loading') {
         scan();
       } else {
         document.addEventListener('DOMContentLoaded', scan);

@@ -24,14 +24,14 @@ export default ( ( global, document ) => {
     zIndex: -1,
     autoResize: true,
     isMobile: () => {
-      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/g.test(navigator.userAgent || navigator.vendor || global.opera);
+      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/g.test( navigator.userAgent || navigator.vendor || global.opera );
       return isMobile || ( global.innerWidth < 768 );
     },
   };
 
   const forEach = ( array, callback, scope ) => {
     for ( let i = 0; i < array.length; i++ ) {
-      callback.call( scope, array[i] ); // passes back stuff we need
+      callback.call( scope, array[ i ] ); // passes back stuff we need
     }
   };
 
@@ -39,14 +39,14 @@ export default ( ( global, document ) => {
     constructor( element, options = {} ) {
       // Extend options
       Object.keys( defaults ).forEach( ( key ) => {
-        if ( ! Object.prototype.hasOwnProperty.call( options, key) ) {
+        if ( ! Object.prototype.hasOwnProperty.call( options, key ) ) {
           options[ key ] = defaults[ key ];
         }
-      });
+      } );
 
       // Set the ratio
       if ( 'string' === typeof options.ratio ) {
-        options.ratio = '4/3' === options.ratio ? 4/3 : 16/9;
+        options.ratio = '4/3' === options.ratio ? 4 / 3 : 16 / 9;
       }
 
       // Set options
@@ -56,12 +56,12 @@ export default ( ( global, document ) => {
 
       // Check if container exists
       if ( ! this.container ) {
-        return new Error( `Could not find the container: ${element}` );
+        return new Error( `Could not find the container: ${ element }` );
       }
 
       const parse = ( url ) => {
         const undef = { type: false, id: false };
-        if ( !url ) {
+        if ( ! url ) {
           return undef;
         }
 
@@ -75,25 +75,25 @@ export default ( ( global, document ) => {
         }
 
         // parse youtube ID
-        const idYoutube = ( ( url ) => {
+        const idYoutube = ( ( link ) => {
           // eslint-disable-next-line no-useless-escape
           const regExp = /.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
-          const match = url.match( regExp );
+          const match = link.match( regExp );
           return match && match[ 1 ].length === 11 ? match[ 1 ] : false;
         } )( url );
 
         // parse vimeo ID
-        const idVimeo = ( ( url ) => {
+        const idVimeo = ( ( link ) => {
           // eslint-disable-next-line no-useless-escape
           const regExp = /https?:\/\/(?:www\.|player\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)(?:$|\/|\?)/;
-          const match = url.match( regExp );
+          const match = link.match( regExp );
           return match && match[ 3 ] ? match[ 3 ] : false;
         } )( url );
 
         // parse local string
-        const idLocal = ( ( url ) => {
+        const idLocal = ( ( link ) => {
           // eslint-disable-next-line no-useless-escape
-          const videoFormats = url.split( /,(?=mp4\:|webm\:|ogv\:|ogg\:)/ );
+          const videoFormats = link.split( /,(?=mp4\:|webm\:|ogv\:|ogg\:)/ );
           const result = {};
           let ready = 0;
           videoFormats.forEach( ( val ) => {
@@ -149,7 +149,7 @@ export default ( ( global, document ) => {
           if ( 'function' === typeof self.options.wrapperClass ) {
             wrapper.classList.add( self.options.wrapperClass.call( self ) );
           } else {
-            wrapper.classList.add.apply( wrapper.classList, self.options.wrapperClass.split(/[ ,]+/) );
+            wrapper.classList.add.apply( wrapper.classList, self.options.wrapperClass.split( /[ ,]+/ ) );
           }
         }
 
@@ -166,7 +166,7 @@ export default ( ( global, document ) => {
           wrapper.style.backgroundPosition = self.options.posterStyle.position;
           wrapper.style.backgroundRepeat = self.options.posterStyle.repeat;
           wrapper.style.backgroundAttachment = self.options.posterStyle.attachment;
-          wrapper.style.backgroundImage = `url('${self.options.poster}')`;
+          wrapper.style.backgroundImage = `url('${ self.options.poster }')`;
         }
 
         self.wrapper = wrapper;
@@ -181,7 +181,7 @@ export default ( ( global, document ) => {
           if ( 'function' === typeof self.options.overlayClass ) {
             overlay.classList.add( self.options.overlayClass.call( self ) );
           } else {
-            overlay.classList.add.apply( overlay.classList, self.options.overlayClass.split(/[ ,]+/) );
+            overlay.classList.add.apply( overlay.classList, self.options.overlayClass.split( /[ ,]+/ ) );
           }
         }
 
@@ -195,23 +195,23 @@ export default ( ( global, document ) => {
 
       const constructPlayer = ( self = this ) => {
         const events = {
-          'ready': () => {
+          ready: () => {
             self.fire( 'ready', self );
           },
-          'play': ( e ) => {
+          play: e => {
             self.el.style.opacity = '1';
             self.fire( 'play', self, e );
           },
-          'pause': ( e ) => {
+          pause: e => {
             self.fire( 'pause', self, e );
           },
-          'end': ( e ) => {
-            if ( !self.options.loop ) {
+          end: e => {
+            if ( ! self.options.loop ) {
               self.el.style.opacity = '0';
             }
             self.fire( 'end', self, e );
           },
-          'create': ( video ) => {
+          create: video => {
             video.style.position = 'absolute';
             video.style.left = '50%';
             video.style.top = '50%';
@@ -224,9 +224,11 @@ export default ( ( global, document ) => {
             video.style.minHeight = '100%';
             video.style.opacity = '0';
 
-            self.options.extra && Object.keys( self.options.extra ).forEach( ( key ) => {
-              video.setAttribute( key, self.options.extra[ key ] );
-            });
+            if ( self.options.extra ) {
+              Object.keys( self.options.extra ).forEach( ( key ) => {
+                video.setAttribute( key, self.options.extra[ key ] );
+              } );
+            }
 
             self.el = video;
 
@@ -312,12 +314,12 @@ export default ( ( global, document ) => {
         // Somehow Firefox does not set width the first time it creates. This timeout seems to be solving the issue.
         setTimeout( ( self = this ) => {
           self.el.style.width = val + 'px';
-        }, 10);
+        }, 10 );
       } else {
         this.el.style.maxHeight = 'none';
         this.el.style.maxWidth = '100%';
 
-        this.el.style.height = this.el.offsetWidth / this.options.ratio + 'px';
+        this.el.style.height = ( this.el.offsetWidth / this.options.ratio ) + 'px';
         this.el.style.width = '';
 
         if ( this.el.offsetHeight < this.wrapper.offsetHeight + 140 ) {
@@ -328,13 +330,17 @@ export default ( ( global, document ) => {
 
     // Starts the video playback
     play() {
-      this.worker && this.worker.play();
+      if ( this.worker ) {
+        this.worker.play();
+      }
       return this;
     }
 
     // Pauses the video playback
     pause() {
-      this.worker && this.worker.pause();
+      if ( this.worker ) {
+        this.worker.pause();
+      }
       return this;
     }
 
@@ -348,20 +354,20 @@ export default ( ( global, document ) => {
       this.userEventsList = this.userEventsList || [];
 
       // add new callback in events list
-      ( this.userEventsList[name] || ( this.userEventsList[name] = [] ) ).push( callback );
+      ( this.userEventsList[ name ] || ( this.userEventsList[ name ] = [] ) ).push( callback );
     }
 
     off( name, callback ) {
-      if ( ! this.userEventsList || ! this.userEventsList[name] ) {
+      if ( ! this.userEventsList || ! this.userEventsList[ name ] ) {
         return;
       }
 
       if ( ! callback ) {
-        delete this.userEventsList[name];
+        delete this.userEventsList[ name ];
       } else {
-        this.userEventsList[name].forEach( (val, key) => {
-          if (val === callback) {
-            this.userEventsList[name][key] = false;
+        this.userEventsList[ name ].forEach( ( val, key ) => {
+          if ( val === callback ) {
+            this.userEventsList[ name ][ key ] = false;
           }
         } );
       }
@@ -369,10 +375,12 @@ export default ( ( global, document ) => {
 
     fire( name ) {
       const args = [].slice.call( arguments, 1 );
-      if ( this.userEventsList && typeof this.userEventsList[name] !== 'undefined' ) {
+      if ( this.userEventsList && typeof this.userEventsList[ name ] !== 'undefined' ) {
         const self = this;
-        self.userEventsList[name].forEach( function(val) {
-          val && val.apply(self, args);
+        self.userEventsList[ name ].forEach( function( val ) {
+          if ( val ) {
+            val.apply( self, args );
+          }
         } );
       }
     }
@@ -381,13 +389,13 @@ export default ( ( global, document ) => {
   iwideo.destroy = () => {
     forEach( document.querySelectorAll( '[data-iwideo-initialized]' ), el => {
       el.iwideo.destroy();
-    });
+    } );
   };
 
   iwideo.resize = () => {
     forEach( document.querySelectorAll( '[data-iwideo-initialized]' ), el => {
       el.iwideo.resize();
-    });
+    } );
   };
 
   // Provide method for scanning the DOM and initializing iwideo from attribute
@@ -411,7 +419,7 @@ export default ( ( global, document ) => {
       } );
     };
 
-    if ( document.readyState != 'loading' ) {
+    if ( document.readyState !== 'loading' ) {
       scan();
     } else {
       document.addEventListener( 'DOMContentLoaded', scan );
@@ -422,4 +430,4 @@ export default ( ( global, document ) => {
 
   // Return iwideo
   return iwideo;
-})( 'undefined' !== typeof window ? window : undefined, document );
+} )( 'undefined' !== typeof window ? window : undefined, document );

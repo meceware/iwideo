@@ -20,15 +20,15 @@ export default class VimeoVW {
 
     const onReady = callback => {
       // Listen for global Vimeo player callback
-      if ( typeof Vimeo === 'undefined' && !loadingVimeoPlayer ) {
+      if ( typeof Vimeo === 'undefined' && ! loadingVimeoPlayer ) {
         // Prevents Ready event from being called twice
         loadingVimeoPlayer = true;
 
         // Creates deferred so, other players know when to wait.
         const vimeoInterval = setInterval( () => {
           if ( typeof Vimeo !== 'undefined' ) {
-            clearInterval(vimeoInterval);
-            loadingVimeoDefer.resolve('done');
+            clearInterval( vimeoInterval );
+            loadingVimeoDefer.resolve( 'done' );
             callback();
           }
         }, 100 );
@@ -61,44 +61,54 @@ export default class VimeoVW {
         if ( optionsStr !== '' ) {
           optionsStr += '&';
         }
-        optionsStr += `${key}=${encodeURIComponent( playerOptions[key] )}`;
-      });
+        optionsStr += `${ key } = ${ encodeURIComponent( playerOptions[ key ] ) }`;
+      } );
 
       // Create the Vimeo iframe
       const iframe = document.createElement( 'iframe' );
-      iframe.setAttribute('src', `https://player.vimeo.com/video/${id}?${optionsStr}`);
-      iframe.setAttribute('frameborder', '0');
-      iframe.setAttribute('mozallowfullscreen', '');
-      iframe.setAttribute('webkitallowfullscreen', '');
-      iframe.setAttribute('allowfullscreen', '');
+      iframe.setAttribute( 'src', `https://player.vimeo.com/video/${ id }?${ optionsStr }` );
+      iframe.setAttribute( 'frameborder', '0' );
+      iframe.setAttribute( 'mozallowfullscreen', '' );
+      iframe.setAttribute( 'webkitallowfullscreen', '' );
+      iframe.setAttribute( 'allowfullscreen', '' );
       // Append the element to the wrapper
       wrapper.appendChild( iframe );
 
-      events['create'] && events['create']( iframe );
+      if ( events[ 'create' ] ) {
+        events[ 'create' ]( iframe );
+      }
 
       self.player = new Vimeo.Player( iframe, playerOptions );
-      self.player.on('play', (e) => {
-        events[ 'play' ] && events[ 'play' ]( e );
-      });
-      self.player.on('pause', (e) => {
-        events[ 'pause' ] && events[ 'pause' ]( e );
-      });
+      self.player.on( 'play', e => {
+        if ( events[ 'play' ] ) {
+          events[ 'play' ]( e );
+        }
+      } );
+      self.player.on( 'pause', e => {
+        if ( events[ 'pause' ] ) {
+          events[ 'pause' ]( e );
+        }
+      } );
       self.player.on( 'ended', e => {
-        events[ 'end' ] && events[ 'end' ]( e );
-      });
+        if ( events[ 'end' ] ) {
+          events[ 'end' ]( e );
+        }
+      } );
       self.player.on( 'loaded', e => {
-        events[ 'ready' ] && events[ 'ready' ]( e );
-      });
+        if ( events[ 'ready' ] ) {
+          events[ 'ready' ]( e );
+        }
+      } );
     } );
   }
 
   isValid() {
-    return !!this.id;
+    return ! ! this.id;
   }
 
   play( start ) {
     const self = this;
-    if ( !self.player ) {
+    if ( ! self.player ) {
       return;
     }
 
@@ -115,12 +125,12 @@ export default class VimeoVW {
 
   pause() {
     const self = this;
-    if ( !self.player ) {
+    if ( ! self.player ) {
       return;
     }
 
     self.player.getPaused().then( paused => {
-      if ( !paused ) {
+      if ( ! paused ) {
         self.player.pause();
       }
     } );
