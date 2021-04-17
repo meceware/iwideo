@@ -19,14 +19,24 @@
     "url": "https://github.com/meceware/iwideo/issues"
   },
   "license": "MIT",
+  "browserslist": [
+    "> 1%",
+    "last 2 Chrome major versions",
+    "last 2 Firefox major versions",
+    "last 2 Edge major versions",
+    "last 2 Safari major versions",
+    "ie 11",
+    "last 3 Android major versions",
+    "last 3 ChromeAndroid major versions",
+    "last 2 iOS major versions"
+  ],
   "devDependencies": {
-    "@babel/core": "^7.12.17",
-    "@babel/preset-env": "^7.12.17",
-    "@babel/preset-es2015": "^7.0.0-beta.53",
+    "@babel/core": "^7.13.15",
+    "@babel/preset-env": "^7.13.15",
     "del": "^6.0.0",
     "gulp": "^4.0.2",
     "gzip-size": "^6.0.0",
-    "rollup": "^2.39.0",
+    "rollup": "^2.45.2",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-eslint": "^7.0.0",

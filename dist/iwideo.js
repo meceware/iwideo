@@ -592,7 +592,7 @@
 
   exports.debounce = debounce;
   exports.throttle = throttle;
-
+  //# sourceMappingURL=index.js.map
   });
 
   unwrapExports(cjs);
