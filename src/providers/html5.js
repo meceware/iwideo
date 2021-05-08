@@ -24,29 +24,29 @@ export default class HTML5VW {
 
     wrapper.appendChild( player );
 
-    if ( events[ 'create' ] ) {
-      events[ 'create' ]( player );
+    if ( events.create ) {
+      events.create( player );
     }
 
     player.addEventListener( 'play', e => {
-      if ( events[ 'play' ] ) {
-        events[ 'play' ]( e );
+      if ( events.play ) {
+        events.play( e );
       }
     } );
     player.addEventListener( 'pause', e => {
-      if ( events[ 'pause' ] ) {
-        events[ 'pause' ]( e );
+      if ( events.pause ) {
+        event.pause( e );
       }
     } );
     player.addEventListener( 'ended', e => {
-      if ( events[ 'end' ] ) {
-        events[ 'end' ]( e );
+      if ( events.end ) {
+        events.end( e );
       }
     } );
 
     player.addEventListener( 'loadedmetadata', function() {
-      if ( events[ 'ready' ] ) {
-        events[ 'ready' ]();
+      if ( events.ready ) {
+        events.ready();
       }
 
       // autoplay

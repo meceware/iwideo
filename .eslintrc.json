@@ -9,6 +9,7 @@
         "require": true,
         "exports": true
     },
+    "ignorePatterns": [ "**/docs", "**/gulpfile.js", "**/dist/*.js" ],
     "extends": "eslint:recommended",
     "parserOptions": {
         "sourceType": "module"

@@ -1,5 +1,5 @@
 /* 
- * iwideo v1.1.9
+ * iwideo v1.1.10
  * https://github.com/meceware/iwideo 
  * 
  * Made by Mehmet Celik (https://www.meceware.com/) 
@@ -151,29 +151,29 @@
                 self.player.mute();
               }
 
-              if (events['ready']) {
-                events['ready'](e);
+              if (events.ready) {
+                events.ready(e);
               }
             },
             onStateChange: function onStateChange(e) {
               switch (e.data) {
                 case YT.PlayerState.ENDED:
-                  if (events['end']) {
-                    events['end'](e);
+                  if (events.end) {
+                    events.end(e);
                   }
 
                   break;
 
                 case YT.PlayerState.PLAYING:
-                  if (events['play']) {
-                    events['play'](e);
+                  if (events.play) {
+                    events.play(e);
                   }
 
                   break;
 
                 case YT.PlayerState.PAUSED:
-                  if (events['pause']) {
-                    events['pause'](e);
+                  if (events.pause) {
+                    events.pause(e);
                   }
 
                   break;
@@ -187,8 +187,8 @@
         wrapper.appendChild(toBeReplaced);
         self.player = new YT.Player(toBeReplaced, playerOptions);
 
-        if (events['create']) {
-          events['create'](self.player.getIframe());
+        if (events.create) {
+          events.create(self.player.getIframe());
         }
       });
     }
@@ -309,29 +309,29 @@
 
         wrapper.appendChild(iframe);
 
-        if (events['create']) {
-          events['create'](iframe);
+        if (events.create) {
+          events.create(iframe);
         }
 
         self.player = new Vimeo.Player(iframe, playerOptions);
         self.player.on('play', function (e) {
-          if (events['play']) {
-            events['play'](e);
+          if (events.play) {
+            events.play(e);
           }
         });
         self.player.on('pause', function (e) {
-          if (events['pause']) {
-            events['pause'](e);
+          if (events.pause) {
+            events.pause(e);
           }
         });
         self.player.on('ended', function (e) {
-          if (events['end']) {
-            events['end'](e);
+          if (events.end) {
+            events.end(e);
           }
         });
         self.player.on('loaded', function (e) {
-          if (events['ready']) {
-            events['ready'](e);
+          if (events.ready) {
+            events.ready(e);
           }
         });
       });
@@ -411,28 +411,28 @@
       this.player = player;
       wrapper.appendChild(player);
 
-      if (events['create']) {
-        events['create'](player);
+      if (events.create) {
+        events.create(player);
       }
 
       player.addEventListener('play', function (e) {
-        if (events['play']) {
-          events['play'](e);
+        if (events.play) {
+          events.play(e);
         }
       });
       player.addEventListener('pause', function (e) {
-        if (events['pause']) {
-          events['pause'](e);
+        if (events.pause) {
+          event.pause(e);
         }
       });
       player.addEventListener('ended', function (e) {
-        if (events['end']) {
-          events['end'](e);
+        if (events.end) {
+          events.end(e);
         }
       });
       player.addEventListener('loadedmetadata', function () {
-        if (events['ready']) {
-          events['ready']();
+        if (events.ready) {
+          events.ready();
         } // autoplay
 
 

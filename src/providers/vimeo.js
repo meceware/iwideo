@@ -74,29 +74,29 @@ export default class VimeoVW {
       // Append the element to the wrapper
       wrapper.appendChild( iframe );
 
-      if ( events[ 'create' ] ) {
-        events[ 'create' ]( iframe );
+      if ( events.create ) {
+        events.create( iframe );
       }
 
       self.player = new Vimeo.Player( iframe, playerOptions );
       self.player.on( 'play', e => {
-        if ( events[ 'play' ] ) {
-          events[ 'play' ]( e );
+        if ( events.play ) {
+          events.play( e );
         }
       } );
       self.player.on( 'pause', e => {
-        if ( events[ 'pause' ] ) {
-          events[ 'pause' ]( e );
+        if ( events.pause ) {
+          events.pause( e );
         }
       } );
       self.player.on( 'ended', e => {
-        if ( events[ 'end' ] ) {
-          events[ 'end' ]( e );
+        if ( events.end ) {
+          events.end( e );
         }
       } );
       self.player.on( 'loaded', e => {
-        if ( events[ 'ready' ] ) {
-          events[ 'ready' ]( e );
+        if ( events.ready ) {
+          events.ready( e );
         }
       } );
     } );

@@ -66,27 +66,27 @@ export default class YouTubeVW {
               self.player.mute();
             }
 
-            if ( events[ 'ready' ] ) {
-              events[ 'ready' ]( e );
+            if ( events.ready ) {
+              events.ready( e );
             }
           },
           onStateChange: e => {
             switch ( e.data ) {
               case ( YT.PlayerState.ENDED ) :
-                if ( events[ 'end' ] ) {
-                  events[ 'end' ]( e );
+                if ( events.end ) {
+                  events.end( e );
                 }
                 break;
 
               case ( YT.PlayerState.PLAYING ) :
-                if ( events[ 'play' ] ) {
-                  events[ 'play' ]( e );
+                if ( events.play ) {
+                  events.play( e );
                 }
                 break;
 
               case ( YT.PlayerState.PAUSED ) :
-                if ( events[ 'pause' ] ) {
-                  events[ 'pause' ]( e );
+                if ( events.pause ) {
+                  events.pause( e );
                 }
                 break;
             }
@@ -99,8 +99,8 @@ export default class YouTubeVW {
       // Append the element to the wrapper
       wrapper.appendChild( toBeReplaced );
       self.player = new YT.Player( toBeReplaced, playerOptions );
-      if ( events[ 'create' ] ) {
-        events[ 'create' ]( self.player.getIframe() );
+      if ( events.create ) {
+        events.create( self.player.getIframe() );
       }
     } );
   }
