@@ -35,7 +35,7 @@ export default class HTML5VW {
     } );
     player.addEventListener( 'pause', e => {
       if ( events.pause ) {
-        event.pause( e );
+        events.pause( e );
       }
     } );
     player.addEventListener( 'ended', e => {

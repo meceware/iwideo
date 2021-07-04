@@ -1,5 +1,5 @@
 /* 
- * iwideo v1.1.10
+ * iwideo v1.1.11
  * https://github.com/meceware/iwideo 
  * 
  * Made by Mehmet Celik (https://www.meceware.com/) 
@@ -422,7 +422,7 @@
       });
       player.addEventListener('pause', function (e) {
         if (events.pause) {
-          event.pause(e);
+          events.pause(e);
         }
       });
       player.addEventListener('ended', function (e) {
