@@ -7,8 +7,12 @@ const { nodeResolve } = require( '@rollup/plugin-node-resolve' );
 const eslint = require( '@rollup/plugin-eslint' );
 const { terser } = require( 'rollup-plugin-terser' );
 const pckg = require( './package.json' );
-const gzipSize = require( 'gzip-size' );
 const serve = require( 'rollup-plugin-serve' );
+
+const gzipSizeFromFileSync = async ( path ) => {
+  const gzipSize = await import( 'gzip-size' );
+  return gzipSize.gzipSizeFromFileSync( path );
+};
 
 const dev = () => {
   const devBuild = () => {
@@ -20,6 +24,7 @@ const dev = () => {
         commonjs(),
         babel( {
           exclude: 'node_modules/**',
+          babelHelpers: 'bundled',
         } ),
         serve( {
           contentBase: [ 'docs', 'dist' ],
@@ -32,7 +37,6 @@ const dev = () => {
         name: 'iwideo',
         file: 'dist/iwideo.min.js',
         format: 'umd',
-        moduleName: 'iwideo',
         sourcemap: true,
       } );
     } );
@@ -65,6 +69,27 @@ const build = () => {
       commonjs(),
       babel( {
         exclude: 'node_modules/**',
+        babelHelpers: 'bundled',
+        presets: [
+          [ '@babel/env',
+            {
+              targets: {
+                browsers: [
+                  '> 1%',
+                  'last 2 Chrome major versions',
+                  'last 2 Firefox major versions',
+                  'last 2 Edge major versions',
+                  'last 2 Safari major versions',
+                  'last 3 Android major versions',
+                  'last 3 ChromeAndroid major versions',
+                  'last 2 iOS major versions',
+                ],
+              },
+              useBuiltIns: 'usage',
+              corejs: '3',
+            },
+          ],
+        ],
       } ),
       terser( {
         output: {
@@ -81,7 +106,6 @@ const build = () => {
       name: 'iwideo',
       file: 'dist/iwideo.min.js',
       format: 'umd',
-      moduleName: 'iwideo',
       sourcemap: false,
       banner: banner,
     } );
@@ -94,6 +118,7 @@ const build = () => {
         commonjs(),
         babel( {
           exclude: 'node_modules/**',
+          babelHelpers: 'bundled',
         } ),
       ],
     } );
@@ -102,12 +127,13 @@ const build = () => {
       name: 'iwideo',
       file: 'dist/iwideo.js',
       format: 'umd',
-      moduleName: 'iwideo',
       sourcemap: false,
       banner: banner,
     } );
   } ).then( () => {
-    console.log( 'gzipped file size: ' + ( Math.round( ( gzipSize.fileSync( 'dist/iwideo.min.js' ) / 1024 ) * 100 ) / 100 ) + 'KB' );
+    return gzipSizeFromFileSync( 'dist/iwideo.min.js' );
+  } ).then( ( val ) => {
+    console.log( 'gzipped file size: ' + ( Math.round( ( val / 1024 ) * 100 ) / 100 ) + 'KB' );
   } );
 };
 
