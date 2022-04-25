@@ -102,7 +102,6 @@
     "template-curly-spacing": ["error", "always"],
     "valid-jsdoc": ["error", { "requireReturn": false }],
     "valid-typeof": "error",
-        "prefer-numeric-literals": "error",
-        "linebreak-style": ["error", "windows"]
+        "prefer-numeric-literals": "error"
     }
   }
