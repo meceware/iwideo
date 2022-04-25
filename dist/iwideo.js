@@ -1,5 +1,5 @@
 /* 
- * iwideo v1.1.12
+ * iwideo v1.1.13
  * https://github.com/meceware/iwideo 
  * 
  * Made by Mehmet Celik (https://www.meceware.com/) 
@@ -244,6 +244,37 @@
         return;
       }
 
+      var playerOptions = {
+        autopause: 0,
+        autoplay: options.autoplay ? 1 : 0,
+        background: 1,
+        byline: 0,
+        controls: 0,
+        loop: options.loop ? 1 : 0,
+        muted: options.mute ? 1 : 0,
+        portrait: 0,
+        transparent: 1,
+        title: 0,
+        badge: 0
+      };
+      var optionsStr = '';
+      Object.keys(playerOptions).forEach(function (key) {
+        if (optionsStr !== '') {
+          optionsStr += '&';
+        }
+
+        optionsStr += "".concat(key, "=").concat(encodeURIComponent(playerOptions[key]));
+      }); // Create the Vimeo iframe
+
+      var iframe = document.createElement('iframe');
+      iframe.setAttribute('src', "https://player.vimeo.com/video/".concat(id, "?").concat(optionsStr));
+      iframe.setAttribute('frameborder', '0');
+      iframe.setAttribute('mozallowfullscreen', '');
+      iframe.setAttribute('webkitallowfullscreen', '');
+      iframe.setAttribute('allowfullscreen', ''); // Append the element to the wrapper
+
+      wrapper.appendChild(iframe);
+
       if (!VimeoAPIadded) {
         VimeoAPIadded = 1;
         var tag = document.createElement('script');
@@ -275,41 +306,6 @@
 
       onReady(function () {
         var self = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this;
-        var playerOptions = {
-          autopause: 0,
-          autoplay: options.autoplay ? 1 : 0,
-          background: 1,
-          byline: 0,
-          controls: 0,
-          loop: options.loop ? 1 : 0,
-          muted: options.mute ? 1 : 0,
-          portrait: 0,
-          transparent: 1,
-          title: 0,
-          badge: 0
-        };
-        var optionsStr = '';
-        Object.keys(playerOptions).forEach(function (key) {
-          if (optionsStr !== '') {
-            optionsStr += '&';
-          }
-
-          optionsStr += "".concat(key, " = ").concat(encodeURIComponent(playerOptions[key]));
-        }); // Create the Vimeo iframe
-
-        var iframe = document.createElement('iframe');
-        iframe.setAttribute('src', "https://player.vimeo.com/video/".concat(id, "?").concat(optionsStr));
-        iframe.setAttribute('frameborder', '0');
-        iframe.setAttribute('mozallowfullscreen', '');
-        iframe.setAttribute('webkitallowfullscreen', '');
-        iframe.setAttribute('allowfullscreen', ''); // Append the element to the wrapper
-
-        wrapper.appendChild(iframe);
-
-        if (events.create) {
-          events.create(iframe);
-        }
-
         self.player = new Vimeo.Player(iframe, playerOptions);
         self.player.on('play', function (e) {
           if (events.play) {
@@ -331,6 +327,10 @@
             events.ready(e);
           }
         });
+
+        if (events.create) {
+          events.create(iframe);
+        }
       });
     }
 
@@ -481,24 +481,38 @@
    * Throttle execution of a function. Especially useful for rate limiting
    * execution of handlers on events like resize and scroll.
    *
-   * @param  {number}    delay -          A zero-or-greater delay in milliseconds. For event callbacks, values around 100 or 250 (or even higher) are most useful.
-   * @param  {boolean}   [noTrailing] -   Optional, defaults to false. If noTrailing is true, callback will only execute every `delay` milliseconds while the
-   *                                    throttled-function is being called. If noTrailing is false or unspecified, callback will be executed one final time
-   *                                    after the last throttled-function call. (After the throttled-function has not been called for `delay` milliseconds,
-   *                                    the internal counter is reset).
-   * @param  {Function}  callback -       A function to be executed after delay milliseconds. The `this` context and all arguments are passed through, as-is,
-   *                                    to `callback` when the throttled-function is executed.
-   * @param  {boolean}   [debounceMode] - If `debounceMode` is true (at begin), schedule `clear` to execute after `delay` ms. If `debounceMode` is false (at end),
-   *                                    schedule `callback` to execute after `delay` ms.
+   * @param {number} delay -                  A zero-or-greater delay in milliseconds. For event callbacks, values around 100 or 250 (or even higher)
+   *                                            are most useful.
+   * @param {Function} callback -               A function to be executed after delay milliseconds. The `this` context and all arguments are passed through,
+   *                                            as-is, to `callback` when the throttled-function is executed.
+   * @param {object} [options] -              An object to configure options.
+   * @param {boolean} [options.noTrailing] -   Optional, defaults to false. If noTrailing is true, callback will only execute every `delay` milliseconds
+   *                                            while the throttled-function is being called. If noTrailing is false or unspecified, callback will be executed
+   *                                            one final time after the last throttled-function call. (After the throttled-function has not been called for
+   *                                            `delay` milliseconds, the internal counter is reset).
+   * @param {boolean} [options.noLeading] -   Optional, defaults to false. If noLeading is false, the first throttled-function call will execute callback
+   *                                            immediately. If noLeading is true, the first the callback execution will be skipped. It should be noted that
+   *                                            callback will never executed if both noLeading = true and noTrailing = true.
+   * @param {boolean} [options.debounceMode] - If `debounceMode` is true (at begin), schedule `clear` to execute after `delay` ms. If `debounceMode` is
+   *                                            false (at end), schedule `callback` to execute after `delay` ms.
    *
-   * @returns {Function}  A new, throttled, function.
+   * @returns {Function} A new, throttled, function.
    */
-  function throttle (delay, noTrailing, callback, debounceMode) {
+  function throttle (delay, callback, options) {
+    var _ref = options || {},
+        _ref$noTrailing = _ref.noTrailing,
+        noTrailing = _ref$noTrailing === void 0 ? false : _ref$noTrailing,
+        _ref$noLeading = _ref.noLeading,
+        noLeading = _ref$noLeading === void 0 ? false : _ref$noLeading,
+        _ref$debounceMode = _ref.debounceMode,
+        debounceMode = _ref$debounceMode === void 0 ? undefined : _ref$debounceMode;
     /*
      * After wrapper has stopped being called, this timeout ensures that
      * `callback` is executed at the proper times in `throttle` and `end`
      * debounce modes.
      */
+
+
     var timeoutID;
     var cancelled = false; // Keep track of the last time `callback` was executed.
 
@@ -514,13 +528,6 @@
     function cancel() {
       clearExistingTimeout();
       cancelled = true;
-    } // `noTrailing` defaults to falsy.
-
-
-    if (typeof noTrailing !== 'boolean') {
-      debounceMode = callback;
-      callback = noTrailing;
-      noTrailing = undefined;
     }
     /*
      * The `wrapper` function encapsulates all of the throttling / debouncing
@@ -556,10 +563,11 @@
         timeoutID = undefined;
       }
 
-      if (debounceMode && !timeoutID) {
+      if (!noLeading && debounceMode && !timeoutID) {
         /*
          * Since `wrapper` is being called for the first time and
-         * `debounceMode` is true (at begin), execute `callback`.
+         * `debounceMode` is true (at begin), execute `callback`
+         * and noLeading != true.
          */
         exec();
       }
@@ -567,11 +575,24 @@
       clearExistingTimeout();
 
       if (debounceMode === undefined && elapsed > delay) {
-        /*
-         * In throttle mode, if `delay` time has been exceeded, execute
-         * `callback`.
-         */
-        exec();
+        if (noLeading) {
+          /*
+           * In throttle mode with noLeading, if `delay` time has
+           * been exceeded, update `lastExec` and schedule `callback`
+           * to execute after `delay` ms.
+           */
+          lastExec = Date.now();
+
+          if (!noTrailing) {
+            timeoutID = setTimeout(debounceMode ? clear : exec, delay);
+          }
+        } else {
+          /*
+           * In throttle mode without noLeading, if `delay` time has been exceeded, execute
+           * `callback`.
+           */
+          exec();
+        }
       } else if (noTrailing !== true) {
         /*
          * In trailing throttle mode, since `delay` time has not been
