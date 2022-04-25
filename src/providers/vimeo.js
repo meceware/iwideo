@@ -11,6 +11,38 @@ export default class VimeoVW {
       return;
     }
 
+    const playerOptions = {
+      autopause: 0,
+      autoplay: options.autoplay ? 1 : 0,
+      background: 1,
+      byline: 0,
+      controls: 0,
+      loop: options.loop ? 1 : 0,
+      muted: options.mute ? 1 : 0,
+      portrait: 0,
+      transparent: 1,
+      title: 0,
+      badge: 0,
+    };
+
+    let optionsStr = '';
+    Object.keys( playerOptions ).forEach( key => {
+      if ( optionsStr !== '' ) {
+        optionsStr += '&';
+      }
+      optionsStr += `${ key }=${ encodeURIComponent( playerOptions[ key ] ) }`;
+    } );
+
+    // Create the Vimeo iframe
+    const iframe = document.createElement( 'iframe' );
+    iframe.setAttribute( 'src', `https://player.vimeo.com/video/${ id }?${ optionsStr }` );
+    iframe.setAttribute( 'frameborder', '0' );
+    iframe.setAttribute( 'mozallowfullscreen', '' );
+    iframe.setAttribute( 'webkitallowfullscreen', '' );
+    iframe.setAttribute( 'allowfullscreen', '' );
+    // Append the element to the wrapper
+    wrapper.appendChild( iframe );
+
     if ( ! VimeoAPIadded ) {
       VimeoAPIadded = 1;
       const tag = document.createElement( 'script' );
@@ -42,42 +74,6 @@ export default class VimeoVW {
     };
 
     onReady( ( self = this ) => {
-      const playerOptions = {
-        autopause: 0,
-        autoplay: options.autoplay ? 1 : 0,
-        background: 1,
-        byline: 0,
-        controls: 0,
-        loop: options.loop ? 1 : 0,
-        muted: options.mute ? 1 : 0,
-        portrait: 0,
-        transparent: 1,
-        title: 0,
-        badge: 0,
-      };
-
-      let optionsStr = '';
-      Object.keys( playerOptions ).forEach( key => {
-        if ( optionsStr !== '' ) {
-          optionsStr += '&';
-        }
-        optionsStr += `${ key } = ${ encodeURIComponent( playerOptions[ key ] ) }`;
-      } );
-
-      // Create the Vimeo iframe
-      const iframe = document.createElement( 'iframe' );
-      iframe.setAttribute( 'src', `https://player.vimeo.com/video/${ id }?${ optionsStr }` );
-      iframe.setAttribute( 'frameborder', '0' );
-      iframe.setAttribute( 'mozallowfullscreen', '' );
-      iframe.setAttribute( 'webkitallowfullscreen', '' );
-      iframe.setAttribute( 'allowfullscreen', '' );
-      // Append the element to the wrapper
-      wrapper.appendChild( iframe );
-
-      if ( events.create ) {
-        events.create( iframe );
-      }
-
       self.player = new Vimeo.Player( iframe, playerOptions );
       self.player.on( 'play', e => {
         if ( events.play ) {
@@ -99,6 +95,10 @@ export default class VimeoVW {
           events.ready( e );
         }
       } );
+
+      if ( events.create ) {
+        events.create( iframe );
+      }
     } );
   }
 
