@@ -28,8 +28,8 @@ const dev = () => {
         } ),
         serve( {
           contentBase: [ 'docs', 'dist' ],
-          host: 'localhost',
-          port: 10001,
+          host: '0.0.0.0',
+          port: 3000,
         } ),
       ],
     } ).then( function( bundle ) {
@@ -44,7 +44,7 @@ const dev = () => {
 
   devBuild();
 
-  gulp.watch( 'src/**/*.js', devBuild );
+  gulp.watch( 'src/**/*.js', {interval: 1000, usePolling: true}, devBuild );
 };
 
 const build = () => {
