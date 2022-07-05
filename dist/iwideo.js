@@ -1,5 +1,5 @@
 /* 
- * iwideo v1.1.13
+ * iwideo v1.1.14
  * https://github.com/meceware/iwideo 
  * 
  * Made by Mehmet Celik (https://www.meceware.com/) 
@@ -525,9 +525,13 @@
     } // Function to cancel next exec
 
 
-    function cancel() {
+    function cancel(options) {
+      var _ref2 = options || {},
+          _ref2$upcomingOnly = _ref2.upcomingOnly,
+          upcomingOnly = _ref2$upcomingOnly === void 0 ? false : _ref2$upcomingOnly;
+
       clearExistingTimeout();
-      cancelled = true;
+      cancelled = !upcomingOnly;
     }
     /*
      * The `wrapper` function encapsulates all of the throttling / debouncing
