@@ -1,5 +1,4 @@
 const gulp = require( 'gulp' );
-const del = require( 'del' );
 const { rollup } = require( 'rollup' );
 const { babel } = require( '@rollup/plugin-babel' );
 const commonjs = require( '@rollup/plugin-commonjs' );
@@ -12,6 +11,11 @@ const serve = require( 'rollup-plugin-serve' );
 const gzipSizeFromFileSync = async ( path ) => {
   const gzipSize = await import( 'gzip-size' );
   return gzipSize.gzipSizeFromFileSync( path );
+};
+
+const deleteFiles = async ( patterns ) => {
+  const { deleteSync } = await import( 'del' );
+  deleteSync( patterns );
 };
 
 const dev = () => {
@@ -49,7 +53,7 @@ const dev = () => {
 
 const build = () => {
   // Remove dist folder content
-  del( [
+  deleteFiles( [
     'dist/**/*',
   ] );
 
