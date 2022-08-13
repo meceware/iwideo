@@ -10,41 +10,6 @@
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.iwideo = factory());
 })(this, (function () { 'use strict';
 
-  function _typeof(obj) {
-    "@babel/helpers - typeof";
-
-    return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
-      return typeof obj;
-    } : function (obj) {
-      return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    }, _typeof(obj);
-  }
-
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
-
-  function _defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];
-      descriptor.enumerable = descriptor.enumerable || false;
-      descriptor.configurable = true;
-      if ("value" in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }
-
-  function _createClass(Constructor, protoProps, staticProps) {
-    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-    if (staticProps) _defineProperties(Constructor, staticProps);
-    Object.defineProperty(Constructor, "prototype", {
-      writable: false
-    });
-    return Constructor;
-  }
-
   // Deferred
   // thanks http://stackoverflow.com/questions/18096715/implement-deferred-object-without-using-jquery
   function Deferred() {
@@ -53,40 +18,41 @@
   }
 
   Deferred.prototype = {
-    execute: function execute(list, args) {
-      var i = list.length;
+    execute(list, args) {
+      let i = list.length;
       args = Array.prototype.slice.call(args);
 
       while (i--) {
         list[i].apply(null, args);
       }
     },
-    resolve: function resolve() {
+
+    resolve() {
       this.execute(this._done, arguments);
     },
-    reject: function reject() {
+
+    reject() {
       this.execute(this._fail, arguments);
     },
-    done: function done(callback) {
+
+    done(callback) {
       this._done.push(callback);
     },
-    fail: function fail(callback) {
+
+    fail(callback) {
       this._fail.push(callback);
     }
+
   };
 
-  var YoutubeAPIadded = false;
-  var loadingYoutubePlayer = false;
-  var loadingYoutubeDefer = new Deferred();
-
-  var YouTubeVW = /*#__PURE__*/function () {
-    function YouTubeVW(global, document, id, wrapper, options) {
+  let YoutubeAPIadded = false;
+  let loadingYoutubePlayer = false;
+  const loadingYoutubeDefer = new Deferred();
+  class YouTubeVW {
+    constructor(global, document, id, wrapper, options) {
       var _this = this;
 
-      var events = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : {};
-
-      _classCallCheck(this, YouTubeVW);
-
+      let events = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : {};
       this.id = id;
 
       if (!this.isValid()) {
@@ -95,12 +61,12 @@
 
       if (!YoutubeAPIadded) {
         YoutubeAPIadded = 1;
-        var tag = document.createElement('script');
+        const tag = document.createElement('script');
         tag.src = 'https://www.youtube.com/iframe_api';
         document.querySelector('body').appendChild(tag);
       }
 
-      var onReady = function onReady(callback) {
+      const onReady = callback => {
         // Listen for global YT player callback
         if ((typeof YT === 'undefined' || YT.loaded === 0) && !loadingYoutubePlayer) {
           // Prevents Ready event from being called twice
@@ -111,18 +77,18 @@
             loadingYoutubeDefer.resolve('done');
             callback();
           };
-        } else if ((typeof YT === "undefined" ? "undefined" : _typeof(YT)) === 'object' && YT.loaded === 1) {
+        } else if (typeof YT === 'object' && YT.loaded === 1) {
           callback();
         } else {
-          loadingYoutubeDefer.done(function () {
+          loadingYoutubeDefer.done(() => {
             callback();
           });
         }
       };
 
       onReady(function () {
-        var self = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this;
-        var playerOptions = {
+        let self = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this;
+        const playerOptions = {
           videoId: id,
           playerVars: {
             autoplay: options.autoplay ? 1 : 0,
@@ -135,7 +101,7 @@
             loop: options.loop ? 1 : 0,
             playlist: id,
             modestbranding: 1,
-            origin: typeof global.location.origin !== 'undefined' ? global.location.origin : "".concat(global.location.protocol, "//").concat(global.location.hostname).concat(global.location.port ? ':' + global.location.port : ''),
+            origin: typeof global.location.origin !== 'undefined' ? global.location.origin : `${global.location.protocol}//${global.location.hostname}${global.location.port ? ':' + global.location.port : ''}`,
             playsinline: 1,
             rel: 0,
             start: 0,
@@ -143,7 +109,7 @@
             widgetid: 1
           },
           events: {
-            onReady: function onReady(e) {
+            onReady: e => {
               if (options.mute) {
                 self.player.mute();
               }
@@ -152,7 +118,7 @@
                 events.ready(e);
               }
             },
-            onStateChange: function onStateChange(e) {
+            onStateChange: e => {
               switch (e.data) {
                 case YT.PlayerState.ENDED:
                   if (events.end) {
@@ -179,7 +145,7 @@
           }
         }; // Create a temporary dom element that will be replaced by the YouTube iframe
 
-        var toBeReplaced = document.createElement('div'); // Append the element to the wrapper
+        const toBeReplaced = document.createElement('div'); // Append the element to the wrapper
 
         wrapper.appendChild(toBeReplaced);
         self.player = new YT.Player(toBeReplaced, playerOptions);
@@ -190,61 +156,51 @@
       });
     }
 
-    _createClass(YouTubeVW, [{
-      key: "isValid",
-      value: function isValid() {
-        return !!this.id;
+    isValid() {
+      return !!this.id;
+    }
+
+    play(start) {
+      if (!this.player) {
+        return;
       }
-    }, {
-      key: "play",
-      value: function play(start) {
-        if (!this.player) {
-          return;
-        }
 
-        if (typeof start !== 'undefined') {
-          this.player.seekTo(start || 0);
-        }
-
-        if (YT.PlayerState.PLAYING !== this.player.getPlayerState()) {
-          this.player.playVideo();
-        }
+      if (typeof start !== 'undefined') {
+        this.player.seekTo(start || 0);
       }
-    }, {
-      key: "pause",
-      value: function pause() {
-        if (!this.player) {
-          return;
-        }
 
-        if (YT.PlayerState.PLAYING === this.player.getPlayerState()) {
-          this.player.pauseVideo();
-        }
+      if (YT.PlayerState.PLAYING !== this.player.getPlayerState()) {
+        this.player.playVideo();
       }
-    }]);
+    }
 
-    return YouTubeVW;
-  }();
+    pause() {
+      if (!this.player) {
+        return;
+      }
 
-  var VimeoAPIadded = 0;
-  var loadingVimeoPlayer = 0;
-  var loadingVimeoDefer = new Deferred();
+      if (YT.PlayerState.PLAYING === this.player.getPlayerState()) {
+        this.player.pauseVideo();
+      }
+    }
 
-  var VimeoVW = /*#__PURE__*/function () {
-    function VimeoVW(document, id, wrapper, options) {
+  }
+
+  let VimeoAPIadded = 0;
+  let loadingVimeoPlayer = 0;
+  const loadingVimeoDefer = new Deferred();
+  class VimeoVW {
+    constructor(document, id, wrapper, options) {
       var _this = this;
 
-      var events = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
-
-      _classCallCheck(this, VimeoVW);
-
+      let events = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
       this.id = id;
 
       if (!this.isValid()) {
         return;
       }
 
-      var playerOptions = {
+      const playerOptions = {
         autopause: 0,
         autoplay: options.autoplay ? 1 : 0,
         background: 1,
@@ -257,17 +213,17 @@
         title: 0,
         badge: 0
       };
-      var optionsStr = '';
-      Object.keys(playerOptions).forEach(function (key) {
+      let optionsStr = '';
+      Object.keys(playerOptions).forEach(key => {
         if (optionsStr !== '') {
           optionsStr += '&';
         }
 
-        optionsStr += "".concat(key, "=").concat(encodeURIComponent(playerOptions[key]));
+        optionsStr += `${key}=${encodeURIComponent(playerOptions[key])}`;
       }); // Create the Vimeo iframe
 
-      var iframe = document.createElement('iframe');
-      iframe.setAttribute('src', "https://player.vimeo.com/video/".concat(id, "?").concat(optionsStr));
+      const iframe = document.createElement('iframe');
+      iframe.setAttribute('src', `https://player.vimeo.com/video/${id}?${optionsStr}`);
       iframe.setAttribute('frameborder', '0');
       iframe.setAttribute('mozallowfullscreen', '');
       iframe.setAttribute('webkitallowfullscreen', '');
@@ -277,18 +233,18 @@
 
       if (!VimeoAPIadded) {
         VimeoAPIadded = 1;
-        var tag = document.createElement('script');
+        const tag = document.createElement('script');
         tag.src = 'https://player.vimeo.com/api/player.js';
         document.querySelector('body').appendChild(tag);
       }
 
-      var onReady = function onReady(callback) {
+      const onReady = callback => {
         // Listen for global Vimeo player callback
         if (typeof Vimeo === 'undefined' && !loadingVimeoPlayer) {
           // Prevents Ready event from being called twice
           loadingVimeoPlayer = true; // Creates deferred so, other players know when to wait.
 
-          var vimeoInterval = setInterval(function () {
+          const vimeoInterval = setInterval(() => {
             if (typeof Vimeo !== 'undefined') {
               clearInterval(vimeoInterval);
               loadingVimeoDefer.resolve('done');
@@ -298,31 +254,31 @@
         } else if (typeof Vimeo !== 'undefined') {
           callback();
         } else {
-          loadingVimeoDefer.done(function () {
+          loadingVimeoDefer.done(() => {
             callback();
           });
         }
       };
 
       onReady(function () {
-        var self = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this;
+        let self = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this;
         self.player = new Vimeo.Player(iframe, playerOptions);
-        self.player.on('play', function (e) {
+        self.player.on('play', e => {
           if (events.play) {
             events.play(e);
           }
         });
-        self.player.on('pause', function (e) {
+        self.player.on('pause', e => {
           if (events.pause) {
             events.pause(e);
           }
         });
-        self.player.on('ended', function (e) {
+        self.player.on('ended', e => {
           if (events.end) {
             events.end(e);
           }
         });
-        self.player.on('loaded', function (e) {
+        self.player.on('loaded', e => {
           if (events.ready) {
             events.ready(e);
           }
@@ -334,63 +290,54 @@
       });
     }
 
-    _createClass(VimeoVW, [{
-      key: "isValid",
-      value: function isValid() {
-        return !!this.id;
+    isValid() {
+      return !!this.id;
+    }
+
+    play(start) {
+      const self = this;
+
+      if (!self.player) {
+        return;
       }
-    }, {
-      key: "play",
-      value: function play(start) {
-        var self = this;
 
-        if (!self.player) {
-          return;
-        }
-
-        if (typeof start !== 'undefined') {
-          self.player.player.setCurrentTime(start || 0);
-        }
-
-        self.player.getPaused().then(function (paused) {
-          if (paused) {
-            self.player.play();
-          }
-        });
+      if (typeof start !== 'undefined') {
+        self.player.player.setCurrentTime(start || 0);
       }
-    }, {
-      key: "pause",
-      value: function pause() {
-        var self = this;
 
-        if (!self.player) {
-          return;
+      self.player.getPaused().then(paused => {
+        if (paused) {
+          self.player.play();
         }
+      });
+    }
 
-        self.player.getPaused().then(function (paused) {
-          if (!paused) {
-            self.player.pause();
-          }
-        });
+    pause() {
+      const self = this;
+
+      if (!self.player) {
+        return;
       }
-    }]);
 
-    return VimeoVW;
-  }();
+      self.player.getPaused().then(paused => {
+        if (!paused) {
+          self.player.pause();
+        }
+      });
+    }
 
-  var HTML5VW = /*#__PURE__*/function () {
-    function HTML5VW(document, id, wrapper, options) {
-      var events = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
+  }
 
-      _classCallCheck(this, HTML5VW);
-
+  class HTML5VW {
+    constructor(document, id, wrapper, options) {
+      let events = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
       this.id = id;
 
       if (!this.isValid()) {
         return;
       }
 
-      var player = document.createElement('video');
+      const player = document.createElement('video');
 
       if (options.mute) {
         player.muted = true;
@@ -399,10 +346,10 @@
       player.loop = options.loop;
       player.setAttribute('playsinline', '');
       player.setAttribute('webkit-playsinline', '');
-      Object.keys(id).forEach(function (key) {
-        var source = document.createElement('source');
+      Object.keys(id).forEach(key => {
+        const source = document.createElement('source');
         source.src = id[key];
-        source.type = "video/".concat(key);
+        source.type = `video/${key}`;
         player.appendChild(source);
       });
       this.player = player;
@@ -412,17 +359,17 @@
         events.create(player);
       }
 
-      player.addEventListener('play', function (e) {
+      player.addEventListener('play', e => {
         if (events.play) {
           events.play(e);
         }
       });
-      player.addEventListener('pause', function (e) {
+      player.addEventListener('pause', e => {
         if (events.pause) {
           events.pause(e);
         }
       });
-      player.addEventListener('ended', function (e) {
+      player.addEventListener('ended', e => {
         if (events.end) {
           events.end(e);
         }
@@ -439,41 +386,35 @@
       });
     }
 
-    _createClass(HTML5VW, [{
-      key: "isValid",
-      value: function isValid() {
-        return !!this.id;
+    isValid() {
+      return !!this.id;
+    }
+
+    play(start) {
+      if (!this.player) {
+        return;
       }
-    }, {
-      key: "play",
-      value: function play(start) {
-        if (!this.player) {
-          return;
-        }
 
-        if (typeof start !== 'undefined') {
-          this.player.currentTime = start;
-        }
-
-        if (this.player.paused) {
-          this.player.play();
-        }
+      if (typeof start !== 'undefined') {
+        this.player.currentTime = start;
       }
-    }, {
-      key: "pause",
-      value: function pause() {
-        if (!this.player) {
-          return;
-        }
 
-        if (!this.player.paused) {
-          this.player.pause();
-        }
+      if (this.player.paused) {
+        this.player.play();
       }
-    }]);
+    }
 
-    return HTML5VW;
-  }();
+    pause() {
+      if (!this.player) {
+        return;
+      }
+
+      if (!this.player.paused) {
+        this.player.pause();
+      }
+    }
+
+  }
 
   /* eslint-disable no-undefined,no-param-reassign,no-shadow */
 
@@ -618,14 +559,14 @@
     return wrapper;
   }
 
-  var index = (function (global, document) {
+  var index = ((global, document) => {
     // If the global wrapper (window) is undefined, do nothing
     if ('undefined' === typeof global.document) {
       return;
     } // Default options
 
 
-    var defaults = {
+    const defaults = {
       wrapperClass: 'iwideo-wrapper',
       overlayClass: 'iwideo-overlay',
       src: false,
@@ -644,28 +585,25 @@
       },
       zIndex: -1,
       autoResize: true,
-      isMobile: function isMobile() {
-        var isMobile = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/g.test(navigator.userAgent || navigator.vendor || global.opera);
+      isMobile: () => {
+        const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/g.test(navigator.userAgent || navigator.vendor || global.opera);
         return isMobile || global.innerWidth < 768;
       }
     };
 
-    var forEach = function forEach(array, callback, scope) {
-      for (var i = 0; i < array.length; i++) {
+    const forEach = (array, callback, scope) => {
+      for (let i = 0; i < array.length; i++) {
         callback.call(scope, array[i]); // passes back stuff we need
       }
     };
 
-    var iwideo = /*#__PURE__*/function () {
-      function iwideo(element) {
+    class iwideo {
+      constructor(element) {
         var _this = this;
 
-        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-        _classCallCheck(this, iwideo);
-
+        let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
         // Extend options
-        Object.keys(defaults).forEach(function (key) {
+        Object.keys(defaults).forEach(key => {
           if (!Object.prototype.hasOwnProperty.call(options, key)) {
             options[key] = defaults[key];
           }
@@ -681,11 +619,11 @@
         this.container = 'string' === typeof element ? document.querySelector(element) : element; // Check if container exists
 
         if (!this.container) {
-          return new Error("Could not find the container: ".concat(element));
+          return new Error(`Could not find the container: ${element}`);
         }
 
-        var parse = function parse(url) {
-          var undef = {
+        const parse = url => {
+          const undef = {
             type: false,
             id: false
           };
@@ -695,7 +633,7 @@
           } // If the type of url is object, then it should be local. Remaining code accepts only string
 
 
-          if (_typeof(url) === 'object') {
+          if (typeof url === 'object') {
             if (Object.prototype.hasOwnProperty.call(url, 'mp4') || Object.prototype.hasOwnProperty.call(url, 'ogv') || Object.prototype.hasOwnProperty.call(url, 'ogg') || Object.prototype.hasOwnProperty.call(url, 'webm')) {
               return {
                 type: 'html5',
@@ -707,30 +645,30 @@
           } // parse youtube ID
 
 
-          var idYoutube = function (link) {
+          const idYoutube = (link => {
             // eslint-disable-next-line no-useless-escape
-            var regExp = /.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
-            var match = link.match(regExp);
+            const regExp = /.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
+            const match = link.match(regExp);
             return match && match[1].length === 11 ? match[1] : false;
-          }(url); // parse vimeo ID
+          })(url); // parse vimeo ID
 
 
-          var idVimeo = function (link) {
+          const idVimeo = (link => {
             // eslint-disable-next-line no-useless-escape
-            var regExp = /https?:\/\/(?:www\.|player\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)(?:$|\/|\?)/;
-            var match = link.match(regExp);
+            const regExp = /https?:\/\/(?:www\.|player\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)(?:$|\/|\?)/;
+            const match = link.match(regExp);
             return match && match[3] ? match[3] : false;
-          }(url); // parse local string
+          })(url); // parse local string
 
 
-          var idLocal = function (link) {
+          const idLocal = (link => {
             // eslint-disable-next-line no-useless-escape
-            var videoFormats = link.split(/,(?=mp4\:|webm\:|ogv\:|ogg\:)/);
-            var result = {};
-            var ready = 0;
-            videoFormats.forEach(function (val) {
+            const videoFormats = link.split(/,(?=mp4\:|webm\:|ogv\:|ogg\:)/);
+            const result = {};
+            let ready = 0;
+            videoFormats.forEach(val => {
               // eslint-disable-next-line no-useless-escape
-              var match = val.match(/^(mp4|webm|ogv|ogg)\:(.*)/);
+              const match = val.match(/^(mp4|webm|ogv|ogg)\:(.*)/);
 
               if (match && match[1] && match[2]) {
                 // eslint-disable-next-line prefer-destructuring
@@ -739,7 +677,7 @@
               }
             });
             return ready ? result : false;
-          }(url);
+          })(url);
 
           if (idYoutube) {
             return {
@@ -766,21 +704,21 @@
         }; // Parse the source and get video ID
 
 
-        var parsed = parse(this.options.src);
+        const parsed = parse(this.options.src);
         this.type = parsed.type;
         this.videoID = parsed.id; // Generates a wrapper that is used for holding the media
 
-        var constructWrapper = function constructWrapper() {
-          var self = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this;
+        const constructWrapper = function () {
+          let self = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this;
           // Get computed style of the container
-          var containerStyle = getComputedStyle(self.container, null); // For the absolute positioning inside works, the container should be relative
+          const containerStyle = getComputedStyle(self.container, null); // For the absolute positioning inside works, the container should be relative
 
           if ('static' === containerStyle.getPropertyValue('position')) {
             self.container.style.position = 'relative';
           } // Create the wrapper element
 
 
-          var wrapper = document.createElement('div'); // If the container is body, set the position as fixed.
+          const wrapper = document.createElement('div'); // If the container is body, set the position as fixed.
 
           wrapper.style.position = 'absolute'; // Set wrapper class
 
@@ -805,7 +743,7 @@
             wrapper.style.backgroundPosition = self.options.posterStyle.position;
             wrapper.style.backgroundRepeat = self.options.posterStyle.repeat;
             wrapper.style.backgroundAttachment = self.options.posterStyle.attachment;
-            wrapper.style.backgroundImage = "url('".concat(self.options.poster, "')");
+            wrapper.style.backgroundImage = `url('${self.options.poster}')`;
           }
 
           self.wrapper = wrapper;
@@ -813,9 +751,9 @@
         }; // Generates an overlay that is placed above the media to prevent interaction
 
 
-        var constructOverlay = function constructOverlay() {
-          var self = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this;
-          var overlay = document.createElement('div');
+        const constructOverlay = function () {
+          let self = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this;
+          const overlay = document.createElement('div');
           overlay.style.position = 'absolute';
 
           if (self.options.overlayClass) {
@@ -833,27 +771,27 @@
           self.wrapper.appendChild(overlay);
         };
 
-        var constructPlayer = function constructPlayer() {
-          var self = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this;
-          var events = {
-            ready: function ready() {
+        const constructPlayer = function () {
+          let self = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this;
+          const events = {
+            ready: () => {
               self.fire('ready', self);
             },
-            play: function play(e) {
+            play: e => {
               self.el.style.opacity = '1';
               self.fire('play', self, e);
             },
-            pause: function pause(e) {
+            pause: e => {
               self.fire('pause', self, e);
             },
-            end: function end(e) {
+            end: e => {
               if (!self.options.loop) {
                 self.el.style.opacity = '0';
               }
 
               self.fire('end', self, e);
             },
-            create: function create(video) {
+            create: video => {
               video.style.position = 'absolute';
               video.style.left = '50%';
               video.style.top = '50%';
@@ -867,7 +805,7 @@
               video.style.opacity = '0';
 
               if (self.options.extra) {
-                Object.keys(self.options.extra).forEach(function (key) {
+                Object.keys(self.options.extra).forEach(key => {
                   video.setAttribute(key, self.options.extra[key]);
                 });
               }
@@ -910,147 +848,134 @@
       } // Destroys and unloads the player
 
 
-      _createClass(iwideo, [{
-        key: "destroy",
-        value: function destroy() {
-          // We wrap this next part in try...catch in case the element is already gone for some reason
-          try {
-            // Remove the node
-            this.container.removeChild(this.wrapper); // Delete worker instance
+      destroy() {
+        // We wrap this next part in try...catch in case the element is already gone for some reason
+        try {
+          // Remove the node
+          this.container.removeChild(this.wrapper); // Delete worker instance
 
-            delete this.container.iwideo.worker; // Delete the instance
+          delete this.container.iwideo.worker; // Delete the instance
 
-            delete this.container.iwideo;
-          } catch (e) {// Nothing to do when error is invoked
+          delete this.container.iwideo;
+        } catch (e) {// Nothing to do when error is invoked
+        }
+      } // Resizes the player to provide the best viewing experience
+
+
+      resize() {
+        var _this2 = this;
+
+        // If there is no element, return
+        if (!this.el) {
+          return;
+        }
+
+        const containerHeight = this.container.offsetHeight;
+        const containerWidth = this.container.offsetWidth;
+        const isPortrait = 1 < this.options.ratio && containerWidth / containerHeight < this.options.ratio || 1 > this.options.ratio && containerHeight / containerWidth < this.options.ratio;
+
+        if (isPortrait) {
+          const val = parseInt(this.el.offsetHeight * this.options.ratio) + 200;
+          this.el.style.maxHeight = '100%';
+          this.el.style.maxWidth = 'none';
+          this.el.style.height = '';
+          this.el.style.width = val + 'px'; // Somehow Firefox does not set width the first time it creates. This timeout seems to be solving the issue.
+
+          setTimeout(function () {
+            let self = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this2;
+            self.el.style.width = val + 'px';
+          }, 10);
+        } else {
+          this.el.style.maxHeight = 'none';
+          this.el.style.maxWidth = '100%';
+          this.el.style.height = this.el.offsetWidth / this.options.ratio + 'px';
+          this.el.style.width = '';
+
+          if (this.el.offsetHeight < this.wrapper.offsetHeight + 140) {
+            this.el.style.height = this.el.offsetWidth / this.options.ratio + 140 + 'px';
           }
-        } // Resizes the player to provide the best viewing experience
+        }
+      } // Starts the video playback
 
-      }, {
-        key: "resize",
-        value: function resize() {
-          var _this2 = this;
 
-          // If there is no element, return
-          if (!this.el) {
-            return;
-          }
+      play() {
+        if (this.worker) {
+          this.worker.play();
+        }
 
-          var containerHeight = this.container.offsetHeight;
-          var containerWidth = this.container.offsetWidth;
-          var isPortrait = 1 < this.options.ratio && containerWidth / containerHeight < this.options.ratio || 1 > this.options.ratio && containerHeight / containerWidth < this.options.ratio;
+        return this;
+      } // Pauses the video playback
 
-          if (isPortrait) {
-            var val = parseInt(this.el.offsetHeight * this.options.ratio) + 200;
-            this.el.style.maxHeight = '100%';
-            this.el.style.maxWidth = 'none';
-            this.el.style.height = '';
-            this.el.style.width = val + 'px'; // Somehow Firefox does not set width the first time it creates. This timeout seems to be solving the issue.
 
-            setTimeout(function () {
-              var self = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this2;
-              self.el.style.width = val + 'px';
-            }, 10);
-          } else {
-            this.el.style.maxHeight = 'none';
-            this.el.style.maxWidth = '100%';
-            this.el.style.height = this.el.offsetWidth / this.options.ratio + 'px';
-            this.el.style.width = '';
+      pause() {
+        if (this.worker) {
+          this.worker.pause();
+        }
 
-            if (this.el.offsetHeight < this.wrapper.offsetHeight + 140) {
-              this.el.style.height = this.el.offsetWidth / this.options.ratio + 140 + 'px';
+        return this;
+      } // Hides the media and shows the poster behind it
+
+
+      showPoster() {
+        this.pause().el.style.opacity = '0';
+      } // events
+
+
+      on(name, callback) {
+        this.userEventsList = this.userEventsList || []; // add new callback in events list
+
+        (this.userEventsList[name] || (this.userEventsList[name] = [])).push(callback);
+      }
+
+      off(name, callback) {
+        if (!this.userEventsList || !this.userEventsList[name]) {
+          return;
+        }
+
+        if (!callback) {
+          delete this.userEventsList[name];
+        } else {
+          this.userEventsList[name].forEach((val, key) => {
+            if (val === callback) {
+              this.userEventsList[name][key] = false;
             }
-          }
-        } // Starts the video playback
-
-      }, {
-        key: "play",
-        value: function play() {
-          if (this.worker) {
-            this.worker.play();
-          }
-
-          return this;
-        } // Pauses the video playback
-
-      }, {
-        key: "pause",
-        value: function pause() {
-          if (this.worker) {
-            this.worker.pause();
-          }
-
-          return this;
-        } // Hides the media and shows the poster behind it
-
-      }, {
-        key: "showPoster",
-        value: function showPoster() {
-          this.pause().el.style.opacity = '0';
-        } // events
-
-      }, {
-        key: "on",
-        value: function on(name, callback) {
-          this.userEventsList = this.userEventsList || []; // add new callback in events list
-
-          (this.userEventsList[name] || (this.userEventsList[name] = [])).push(callback);
+          });
         }
-      }, {
-        key: "off",
-        value: function off(name, callback) {
-          var _this3 = this;
+      }
 
-          if (!this.userEventsList || !this.userEventsList[name]) {
-            return;
-          }
+      fire(name) {
+        const args = [].slice.call(arguments, 1);
 
-          if (!callback) {
-            delete this.userEventsList[name];
-          } else {
-            this.userEventsList[name].forEach(function (val, key) {
-              if (val === callback) {
-                _this3.userEventsList[name][key] = false;
-              }
-            });
-          }
+        if (this.userEventsList && typeof this.userEventsList[name] !== 'undefined') {
+          const self = this;
+          self.userEventsList[name].forEach(function (val) {
+            if (val) {
+              val.apply(self, args);
+            }
+          });
         }
-      }, {
-        key: "fire",
-        value: function fire(name) {
-          var args = [].slice.call(arguments, 1);
+      }
 
-          if (this.userEventsList && typeof this.userEventsList[name] !== 'undefined') {
-            var self = this;
-            self.userEventsList[name].forEach(function (val) {
-              if (val) {
-                val.apply(self, args);
-              }
-            });
-          }
-        }
-      }]);
+    }
 
-      return iwideo;
-    }();
-
-    iwideo.destroy = function () {
-      forEach(document.querySelectorAll('[data-iwideo-initialized]'), function (el) {
+    iwideo.destroy = () => {
+      forEach(document.querySelectorAll('[data-iwideo-initialized]'), el => {
         el.iwideo.destroy();
       });
     };
 
-    iwideo.resize = function () {
-      forEach(document.querySelectorAll('[data-iwideo-initialized]'), function (el) {
+    iwideo.resize = () => {
+      forEach(document.querySelectorAll('[data-iwideo-initialized]'), el => {
         el.iwideo.resize();
       });
     }; // Provide method for scanning the DOM and initializing iwideo from attribute
 
 
-    iwideo.scan = function () {
+    iwideo.scan = () => {
       // API method for scanning the DOM and initializing vide instances from data-vide attribute
       // Scan the DOM for elements that have data-iwideo attribute and initialize new iwideo instance based on that attribute
-      var scan = function scan() {
-        forEach(document.querySelectorAll('[data-iwideo]'), function (el) {
+      const scan = () => {
+        forEach(document.querySelectorAll('[data-iwideo]'), el => {
           // Get the element
           // Check if the element is already instantiated
           if ('undefined' !== typeof el.iwideo) {
