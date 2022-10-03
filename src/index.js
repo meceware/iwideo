@@ -1,7 +1,6 @@
 import YouTubeVW from './providers/youtube';
 import VimeoVW from './providers/vimeo';
 import HTML5VW from './providers/html5';
-import { throttle } from 'throttle-debounce';
 
 export default ( ( global, document ) => {
   // If the global wrapper (window) is undefined, do nothing
@@ -14,7 +13,6 @@ export default ( ( global, document ) => {
     wrapperClass: 'iwideo-wrapper',
     overlayClass: 'iwideo-overlay',
     src: false,
-    ratio: 1.7778, //16:9 ratio
     autoplay: true,
     extra: false,
     loop: true,
@@ -22,7 +20,6 @@ export default ( ( global, document ) => {
     poster: '',
     posterStyle: { size: 'cover', position: 'center center', repeat: 'no-repeat', attachment: 'scroll' },
     zIndex: -1,
-    autoResize: true,
     isMobile: () => {
       const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/g.test( navigator.userAgent || navigator.vendor || global.opera );
       return isMobile || ( global.innerWidth < 768 );
@@ -43,11 +40,6 @@ export default ( ( global, document ) => {
           options[ key ] = defaults[ key ];
         }
       } );
-
-      // Set the ratio
-      if ( 'string' === typeof options.ratio ) {
-        options.ratio = '4/3' === options.ratio ? 4 / 3 : 16 / 9;
-      }
 
       // Set options
       this.options = options;
@@ -213,16 +205,12 @@ export default ( ( global, document ) => {
           },
           create: video => {
             video.style.position = 'absolute';
-            video.style.left = '50%';
-            video.style.top = '50%';
-            video.style.transform = 'translate(-50%, -50%)';
-            video.style.webkitTransform = 'translate(-50%, -50%)';
-            video.style.msTransform = 'translate(-50%, -50%)';
-            video.style.oTransform = 'translate(-50%, -50%)';
-            video.style.mozTransform = 'translate(-50%, -50%)';
-            video.style.minWidth = '100%';
-            video.style.minHeight = '100%';
+            video.style.left = '0';
+            video.style.top = '0';
+            video.style.width = '100%';
+            video.style.height = '100%';
             video.style.opacity = '0';
+            video.style.objectFit = 'cover';
 
             if ( self.options.extra ) {
               Object.keys( self.options.extra ).forEach( ( key ) => {
@@ -231,10 +219,6 @@ export default ( ( global, document ) => {
             }
 
             self.el = video;
-
-            // Resize the frame
-            self.resize();
-
             self.fire( 'create', self, video );
           },
         };
@@ -258,18 +242,6 @@ export default ( ( global, document ) => {
       // Add the overlay
       constructOverlay();
 
-      // Add resize event
-      if ( this.options.autoResize ) {
-        global.addEventListener(
-          'resize',
-          throttle( 200, this.resize ).bind( this ),
-          false
-        );
-      }
-
-      // Resize
-      this.resize();
-
       // Store the instance in the container
       this.container.iwideo = this;
       this.container.setAttribute( 'data-iwideo-initialized', true );
@@ -287,44 +259,6 @@ export default ( ( global, document ) => {
         delete this.container.iwideo;
       } catch ( e ) {
         // Nothing to do when error is invoked
-      }
-    }
-
-    // Resizes the player to provide the best viewing experience
-    resize() {
-      // If there is no element, return
-      if ( ! this.el ) {
-        return;
-      }
-
-      const containerHeight = this.container.offsetHeight;
-      const containerWidth = this.container.offsetWidth;
-
-      const isPortrait = ( ( 1 < this.options.ratio && ( containerWidth / containerHeight ) < this.options.ratio ) ||
-                          ( 1 > this.options.ratio && ( containerHeight / containerWidth ) < this.options.ratio ) );
-
-      if ( isPortrait ) {
-        const val = parseInt( this.el.offsetHeight * this.options.ratio ) + 200;
-        this.el.style.maxHeight = '100%';
-        this.el.style.maxWidth = 'none';
-
-        this.el.style.height = '';
-        this.el.style.width = val + 'px';
-
-        // Somehow Firefox does not set width the first time it creates. This timeout seems to be solving the issue.
-        setTimeout( ( self = this ) => {
-          self.el.style.width = val + 'px';
-        }, 10 );
-      } else {
-        this.el.style.maxHeight = 'none';
-        this.el.style.maxWidth = '100%';
-
-        this.el.style.height = ( this.el.offsetWidth / this.options.ratio ) + 'px';
-        this.el.style.width = '';
-
-        if ( this.el.offsetHeight < this.wrapper.offsetHeight + 140 ) {
-          this.el.style.height = ( this.el.offsetWidth / this.options.ratio ) + 140 + 'px';
-        }
       }
     }
 
@@ -389,12 +323,6 @@ export default ( ( global, document ) => {
   iwideo.destroy = () => {
     forEach( document.querySelectorAll( '[data-iwideo-initialized]' ), el => {
       el.iwideo.destroy();
-    } );
-  };
-
-  iwideo.resize = () => {
-    forEach( document.querySelectorAll( '[data-iwideo-initialized]' ), el => {
-      el.iwideo.resize();
     } );
   };
 

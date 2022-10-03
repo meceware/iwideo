@@ -11,6 +11,7 @@
     src: htmlSource,
     poster: poster,
     overlayClass: 'cover__overlay',
+    isMobile: false,
   });
 
   // Simple self hosted background video

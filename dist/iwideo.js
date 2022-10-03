@@ -1,5 +1,5 @@
 /* 
- * iwideo v1.1.14
+ * iwideo v1.1.15
  * https://github.com/meceware/iwideo 
  * 
  * Made by Mehmet Celik (https://www.meceware.com/) 
@@ -416,149 +416,6 @@
 
   }
 
-  /* eslint-disable no-undefined,no-param-reassign,no-shadow */
-
-  /**
-   * Throttle execution of a function. Especially useful for rate limiting
-   * execution of handlers on events like resize and scroll.
-   *
-   * @param {number} delay -                  A zero-or-greater delay in milliseconds. For event callbacks, values around 100 or 250 (or even higher)
-   *                                            are most useful.
-   * @param {Function} callback -               A function to be executed after delay milliseconds. The `this` context and all arguments are passed through,
-   *                                            as-is, to `callback` when the throttled-function is executed.
-   * @param {object} [options] -              An object to configure options.
-   * @param {boolean} [options.noTrailing] -   Optional, defaults to false. If noTrailing is true, callback will only execute every `delay` milliseconds
-   *                                            while the throttled-function is being called. If noTrailing is false or unspecified, callback will be executed
-   *                                            one final time after the last throttled-function call. (After the throttled-function has not been called for
-   *                                            `delay` milliseconds, the internal counter is reset).
-   * @param {boolean} [options.noLeading] -   Optional, defaults to false. If noLeading is false, the first throttled-function call will execute callback
-   *                                            immediately. If noLeading is true, the first the callback execution will be skipped. It should be noted that
-   *                                            callback will never executed if both noLeading = true and noTrailing = true.
-   * @param {boolean} [options.debounceMode] - If `debounceMode` is true (at begin), schedule `clear` to execute after `delay` ms. If `debounceMode` is
-   *                                            false (at end), schedule `callback` to execute after `delay` ms.
-   *
-   * @returns {Function} A new, throttled, function.
-   */
-  function throttle (delay, callback, options) {
-    var _ref = options || {},
-        _ref$noTrailing = _ref.noTrailing,
-        noTrailing = _ref$noTrailing === void 0 ? false : _ref$noTrailing,
-        _ref$noLeading = _ref.noLeading,
-        noLeading = _ref$noLeading === void 0 ? false : _ref$noLeading,
-        _ref$debounceMode = _ref.debounceMode,
-        debounceMode = _ref$debounceMode === void 0 ? undefined : _ref$debounceMode;
-    /*
-     * After wrapper has stopped being called, this timeout ensures that
-     * `callback` is executed at the proper times in `throttle` and `end`
-     * debounce modes.
-     */
-
-
-    var timeoutID;
-    var cancelled = false; // Keep track of the last time `callback` was executed.
-
-    var lastExec = 0; // Function to clear existing timeout
-
-    function clearExistingTimeout() {
-      if (timeoutID) {
-        clearTimeout(timeoutID);
-      }
-    } // Function to cancel next exec
-
-
-    function cancel(options) {
-      var _ref2 = options || {},
-          _ref2$upcomingOnly = _ref2.upcomingOnly,
-          upcomingOnly = _ref2$upcomingOnly === void 0 ? false : _ref2$upcomingOnly;
-
-      clearExistingTimeout();
-      cancelled = !upcomingOnly;
-    }
-    /*
-     * The `wrapper` function encapsulates all of the throttling / debouncing
-     * functionality and when executed will limit the rate at which `callback`
-     * is executed.
-     */
-
-
-    function wrapper() {
-      for (var _len = arguments.length, arguments_ = new Array(_len), _key = 0; _key < _len; _key++) {
-        arguments_[_key] = arguments[_key];
-      }
-
-      var self = this;
-      var elapsed = Date.now() - lastExec;
-
-      if (cancelled) {
-        return;
-      } // Execute `callback` and update the `lastExec` timestamp.
-
-
-      function exec() {
-        lastExec = Date.now();
-        callback.apply(self, arguments_);
-      }
-      /*
-       * If `debounceMode` is true (at begin) this is used to clear the flag
-       * to allow future `callback` executions.
-       */
-
-
-      function clear() {
-        timeoutID = undefined;
-      }
-
-      if (!noLeading && debounceMode && !timeoutID) {
-        /*
-         * Since `wrapper` is being called for the first time and
-         * `debounceMode` is true (at begin), execute `callback`
-         * and noLeading != true.
-         */
-        exec();
-      }
-
-      clearExistingTimeout();
-
-      if (debounceMode === undefined && elapsed > delay) {
-        if (noLeading) {
-          /*
-           * In throttle mode with noLeading, if `delay` time has
-           * been exceeded, update `lastExec` and schedule `callback`
-           * to execute after `delay` ms.
-           */
-          lastExec = Date.now();
-
-          if (!noTrailing) {
-            timeoutID = setTimeout(debounceMode ? clear : exec, delay);
-          }
-        } else {
-          /*
-           * In throttle mode without noLeading, if `delay` time has been exceeded, execute
-           * `callback`.
-           */
-          exec();
-        }
-      } else if (noTrailing !== true) {
-        /*
-         * In trailing throttle mode, since `delay` time has not been
-         * exceeded, schedule `callback` to execute `delay` ms after most
-         * recent execution.
-         *
-         * If `debounceMode` is true (at begin), schedule `clear` to execute
-         * after `delay` ms.
-         *
-         * If `debounceMode` is false (at end), schedule `callback` to
-         * execute after `delay` ms.
-         */
-        timeoutID = setTimeout(debounceMode ? clear : exec, debounceMode === undefined ? delay - elapsed : delay);
-      }
-    }
-
-    wrapper.cancel = cancel; // Return the wrapper function.
-
-    return wrapper;
-  }
-
   var index = ((global, document) => {
     // If the global wrapper (window) is undefined, do nothing
     if ('undefined' === typeof global.document) {
@@ -570,8 +427,6 @@
       wrapperClass: 'iwideo-wrapper',
       overlayClass: 'iwideo-overlay',
       src: false,
-      ratio: 1.7778,
-      //16:9 ratio
       autoplay: true,
       extra: false,
       loop: true,
@@ -584,7 +439,6 @@
         attachment: 'scroll'
       },
       zIndex: -1,
-      autoResize: true,
       isMobile: () => {
         const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/g.test(navigator.userAgent || navigator.vendor || global.opera);
         return isMobile || global.innerWidth < 768;
@@ -607,12 +461,7 @@
           if (!Object.prototype.hasOwnProperty.call(options, key)) {
             options[key] = defaults[key];
           }
-        }); // Set the ratio
-
-        if ('string' === typeof options.ratio) {
-          options.ratio = '4/3' === options.ratio ? 4 / 3 : 16 / 9;
-        } // Set options
-
+        }); // Set options
 
         this.options = options; // Get the container
 
@@ -793,16 +642,12 @@
             },
             create: video => {
               video.style.position = 'absolute';
-              video.style.left = '50%';
-              video.style.top = '50%';
-              video.style.transform = 'translate(-50%, -50%)';
-              video.style.webkitTransform = 'translate(-50%, -50%)';
-              video.style.msTransform = 'translate(-50%, -50%)';
-              video.style.oTransform = 'translate(-50%, -50%)';
-              video.style.mozTransform = 'translate(-50%, -50%)';
-              video.style.minWidth = '100%';
-              video.style.minHeight = '100%';
+              video.style.left = '0';
+              video.style.top = '0';
+              video.style.width = '100%';
+              video.style.height = '100%';
               video.style.opacity = '0';
+              video.style.objectFit = 'cover';
 
               if (self.options.extra) {
                 Object.keys(self.options.extra).forEach(key => {
@@ -810,9 +655,7 @@
                 });
               }
 
-              self.el = video; // Resize the frame
-
-              self.resize();
+              self.el = video;
               self.fire('create', self, video);
             }
           };
@@ -834,14 +677,7 @@
         } // Add the overlay
 
 
-        constructOverlay(); // Add resize event
-
-        if (this.options.autoResize) {
-          global.addEventListener('resize', throttle(200, this.resize).bind(this), false);
-        } // Resize
-
-
-        this.resize(); // Store the instance in the container
+        constructOverlay(); // Store the instance in the container
 
         this.container.iwideo = this;
         this.container.setAttribute('data-iwideo-initialized', true);
@@ -858,42 +694,6 @@
 
           delete this.container.iwideo;
         } catch (e) {// Nothing to do when error is invoked
-        }
-      } // Resizes the player to provide the best viewing experience
-
-
-      resize() {
-        var _this2 = this;
-
-        // If there is no element, return
-        if (!this.el) {
-          return;
-        }
-
-        const containerHeight = this.container.offsetHeight;
-        const containerWidth = this.container.offsetWidth;
-        const isPortrait = 1 < this.options.ratio && containerWidth / containerHeight < this.options.ratio || 1 > this.options.ratio && containerHeight / containerWidth < this.options.ratio;
-
-        if (isPortrait) {
-          const val = parseInt(this.el.offsetHeight * this.options.ratio) + 200;
-          this.el.style.maxHeight = '100%';
-          this.el.style.maxWidth = 'none';
-          this.el.style.height = '';
-          this.el.style.width = val + 'px'; // Somehow Firefox does not set width the first time it creates. This timeout seems to be solving the issue.
-
-          setTimeout(function () {
-            let self = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this2;
-            self.el.style.width = val + 'px';
-          }, 10);
-        } else {
-          this.el.style.maxHeight = 'none';
-          this.el.style.maxWidth = '100%';
-          this.el.style.height = this.el.offsetWidth / this.options.ratio + 'px';
-          this.el.style.width = '';
-
-          if (this.el.offsetHeight < this.wrapper.offsetHeight + 140) {
-            this.el.style.height = this.el.offsetWidth / this.options.ratio + 140 + 'px';
-          }
         }
       } // Starts the video playback
 
@@ -961,12 +761,6 @@
     iwideo.destroy = () => {
       forEach(document.querySelectorAll('[data-iwideo-initialized]'), el => {
         el.iwideo.destroy();
-      });
-    };
-
-    iwideo.resize = () => {
-      forEach(document.querySelectorAll('[data-iwideo-initialized]'), el => {
-        el.iwideo.resize();
       });
     }; // Provide method for scanning the DOM and initializing iwideo from attribute
 

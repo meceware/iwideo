@@ -1,6 +1,6 @@
 {
   "name": "iwideo",
-  "version": "1.1.14",
+  "version": "1.1.15",
   "description": "No-dependencies library for displaying background videos. Supports self hosted videos, YouTube and Vimeo.",
   "author": {
     "name": "Mehmet Celik",
@@ -43,7 +43,6 @@
     "gzip-size": "^7.0.0",
     "rollup": "^2.77.3",
     "rollup-plugin-serve": "^2.0.1",
-    "rollup-plugin-terser": "^7.0.2",
-    "throttle-debounce": "^5.0.0"
+    "rollup-plugin-terser": "^7.0.2"
   }
 }
