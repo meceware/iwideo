@@ -37,6 +37,7 @@ The default options are
   wrapperClass: 'iwideo-wrapper',
   overlayClass: 'iwideo-overlay',
   src: false,
+  ratio: 1.7778, //16:9 ratio
   autoplay: true,
   extra: false,
   loop: true,
@@ -44,6 +45,7 @@ The default options are
   poster: '',
   posterStyle: { size: 'cover', position: 'center center', repeat: 'no-repeat', attachment: 'scroll' },
   zIndex: -1,
+  autoResize: true,
   isMobile: () => {
     const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/g.test(navigator.userAgent || navigator.vendor || global.opera);
     return isMobile || ( global.innerWidth < 768 );
