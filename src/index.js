@@ -214,12 +214,12 @@ export default ( ( global, document ) => {
           create: video => {
             video.style.position = 'absolute';
             video.style.left = '50%';
-            video.style.top = '0';
+            video.style.top = '50%';
             video.style.width = '100%';
             video.style.height = '100%';
             video.style.opacity = '0';
             video.style.objectFit = 'cover';
-            video.style.transform = 'translateX(-50%)';
+            video.style.transform = 'translateX(-50%) translateY(-50%)';
 
             if ( self.options.extra ) {
               Object.keys( self.options.extra ).forEach( ( key ) => {
@@ -301,11 +301,11 @@ export default ( ( global, document ) => {
                           ( 1 > this.options.ratio && ( containerHeight / containerWidth ) < this.options.ratio ) );
 
       if ( isPortrait ) {
-        const val = parseInt( this.el.offsetHeight * this.options.ratio ) + 200;
+        const val = parseInt( containerHeight * this.options.ratio );
         this.el.style.height = '100%';
         this.el.style.width = val + 'px';
       } else {
-        const val = parseInt( this.el.offsetWidth / this.options.ratio );
+        const val = parseInt( containerWidth / this.options.ratio );
         this.el.style.height = val + 'px';
         this.el.style.width = '100%';
       }
