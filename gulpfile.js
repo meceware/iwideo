@@ -4,7 +4,7 @@ const { babel } = require( '@rollup/plugin-babel' );
 const commonjs = require( '@rollup/plugin-commonjs' );
 const { nodeResolve } = require( '@rollup/plugin-node-resolve' );
 const eslint = require( '@rollup/plugin-eslint' );
-const { terser } = require( 'rollup-plugin-terser' );
+const terser = require( '@rollup/plugin-terser' );
 const pckg = require( './package.json' );
 const serve = require( 'rollup-plugin-serve' );
 
