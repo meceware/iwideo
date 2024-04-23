@@ -543,7 +543,6 @@
         callback.call(scope, array[i]); // passes back stuff we need
       }
     };
-
     class iwideo {
       constructor(element) {
         var _this = this;
