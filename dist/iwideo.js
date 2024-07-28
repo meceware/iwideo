@@ -1,5 +1,5 @@
 /* 
- * iwideo v1.1.17
+ * iwideo v1.1.18
  * https://github.com/meceware/iwideo 
  * 
  * Made by Mehmet Celik (https://www.meceware.com/) 
@@ -388,74 +388,68 @@
    * @returns {Function} A new, throttled, function.
    */
   function throttle (delay, callback, options) {
-    var _ref = options || {},
-        _ref$noTrailing = _ref.noTrailing,
-        noTrailing = _ref$noTrailing === void 0 ? false : _ref$noTrailing,
-        _ref$noLeading = _ref.noLeading,
-        noLeading = _ref$noLeading === void 0 ? false : _ref$noLeading,
-        _ref$debounceMode = _ref.debounceMode,
-        debounceMode = _ref$debounceMode === void 0 ? undefined : _ref$debounceMode;
+    var _ref = {},
+      _ref$noTrailing = _ref.noTrailing,
+      noTrailing = _ref$noTrailing === void 0 ? false : _ref$noTrailing,
+      _ref$noLeading = _ref.noLeading,
+      noLeading = _ref$noLeading === void 0 ? false : _ref$noLeading,
+      _ref$debounceMode = _ref.debounceMode,
+      debounceMode = _ref$debounceMode === void 0 ? undefined : _ref$debounceMode;
     /*
      * After wrapper has stopped being called, this timeout ensures that
      * `callback` is executed at the proper times in `throttle` and `end`
      * debounce modes.
      */
-
-
     var timeoutID;
-    var cancelled = false; // Keep track of the last time `callback` was executed.
+    var cancelled = false;
 
-    var lastExec = 0; // Function to clear existing timeout
+    // Keep track of the last time `callback` was executed.
+    var lastExec = 0;
 
+    // Function to clear existing timeout
     function clearExistingTimeout() {
       if (timeoutID) {
         clearTimeout(timeoutID);
       }
-    } // Function to cancel next exec
+    }
 
-
+    // Function to cancel next exec
     function cancel(options) {
       var _ref2 = options || {},
-          _ref2$upcomingOnly = _ref2.upcomingOnly,
-          upcomingOnly = _ref2$upcomingOnly === void 0 ? false : _ref2$upcomingOnly;
-
+        _ref2$upcomingOnly = _ref2.upcomingOnly,
+        upcomingOnly = _ref2$upcomingOnly === void 0 ? false : _ref2$upcomingOnly;
       clearExistingTimeout();
       cancelled = !upcomingOnly;
     }
+
     /*
      * The `wrapper` function encapsulates all of the throttling / debouncing
      * functionality and when executed will limit the rate at which `callback`
      * is executed.
      */
-
-
     function wrapper() {
       for (var _len = arguments.length, arguments_ = new Array(_len), _key = 0; _key < _len; _key++) {
         arguments_[_key] = arguments[_key];
       }
-
       var self = this;
       var elapsed = Date.now() - lastExec;
-
       if (cancelled) {
         return;
-      } // Execute `callback` and update the `lastExec` timestamp.
+      }
 
-
+      // Execute `callback` and update the `lastExec` timestamp.
       function exec() {
         lastExec = Date.now();
         callback.apply(self, arguments_);
       }
+
       /*
        * If `debounceMode` is true (at begin) this is used to clear the flag
        * to allow future `callback` executions.
        */
-
-
       function clear() {
         timeoutID = undefined;
       }
-
       if (!noLeading && debounceMode && !timeoutID) {
         /*
          * Since `wrapper` is being called for the first time and
@@ -464,9 +458,7 @@
          */
         exec();
       }
-
       clearExistingTimeout();
-
       if (debounceMode === undefined && elapsed > delay) {
         if (noLeading) {
           /*
@@ -475,7 +467,6 @@
            * to execute after `delay` ms.
            */
           lastExec = Date.now();
-
           if (!noTrailing) {
             timeoutID = setTimeout(debounceMode ? clear : exec, delay);
           }
@@ -501,9 +492,9 @@
         timeoutID = setTimeout(debounceMode ? clear : exec, debounceMode === undefined ? delay - elapsed : delay);
       }
     }
+    wrapper.cancel = cancel;
 
-    wrapper.cancel = cancel; // Return the wrapper function.
-
+    // Return the wrapper function.
     return wrapper;
   }
 
