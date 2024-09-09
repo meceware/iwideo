@@ -527,7 +527,8 @@
       isMobile: () => {
         const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/g.test(navigator.userAgent || navigator.vendor || global.opera);
         return isMobile || global.innerWidth < 768;
-      }
+      },
+      mobileOptions: {}
     };
     const forEach = (array, callback, scope) => {
       for (let i = 0; i < array.length; i++) {
@@ -538,7 +539,7 @@
       constructor(element) {
         var _this = this;
         let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-        // Extend options
+        // Extend options from defaults
         Object.keys(defaults).forEach(key => {
           if (!Object.prototype.hasOwnProperty.call(options, key)) {
             options[key] = defaults[key];
@@ -752,9 +753,16 @@
         // Add the wrapper
         constructWrapper();
         // Initialize provider
-        if (this.type && !(this.options.isMobile && this.options.isMobile())) {
-          constructPlayer();
+        if (this.type && (this.options.isMobile === true || this.options.isMobile() === true)) {
+          if (!!Object.keys(this.options.mobileOptions).length) {
+            // Extend options from mobile overrides
+            Object.keys(this.options.mobileOptions).forEach(key => {
+              this.options[key] = this.options.mobileOptions[key];
+            });
+          }
+          // constructPlayer();
         }
+        constructPlayer();
 
         // Add the overlay
         constructOverlay();
