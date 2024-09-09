@@ -27,6 +27,7 @@ export default ( ( global, document ) => {
       const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/g.test( navigator.userAgent || navigator.vendor || global.opera );
       return isMobile || ( global.innerWidth < 768 );
     },
+    mobileOptions: {}
   };
 
   const forEach = ( array, callback, scope ) => {
@@ -37,7 +38,7 @@ export default ( ( global, document ) => {
 
   class iwideo {
     constructor( element, options = {} ) {
-      // Extend options
+      // Extend options from defaults
       Object.keys( defaults ).forEach( ( key ) => {
         if ( ! Object.prototype.hasOwnProperty.call( options, key ) ) {
           options[ key ] = defaults[ key ];
@@ -248,9 +249,16 @@ export default ( ( global, document ) => {
       // Add the wrapper
       constructWrapper();
       // Initialize provider
-      if ( this.type && ! ( this.options.isMobile && this.options.isMobile() ) ) {
-        constructPlayer();
+      if ( this.type && ( this.options.isMobile === true || this.options.isMobile() === true ) ) {
+        if (!!Object.keys(this.options.mobileOptions).length) {
+          // Extend options from mobile overrides
+          Object.keys( this.options.mobileOptions ).forEach( ( key ) => {
+              this.options[ key ] = this.options.mobileOptions[ key ];
+          } );
+        }
+        // constructPlayer();
       }
+      constructPlayer();
 
       // Add the overlay
       constructOverlay();
