@@ -42,7 +42,7 @@
     "del": "^7.1.0",
     "gulp": "^5.0.0",
     "gzip-size": "^7.0.0",
-    "rollup": "^4.19.1",
+    "rollup": "^4.22.4",
     "rollup-plugin-serve": "^1.1.1"
   },
   "dependencies": {
