@@ -1,5 +1,5 @@
 /* 
- * iwideo v1.1.18
+ * iwideo v1.1.19
  * https://github.com/meceware/iwideo 
  * 
  * Made by Mehmet Celik (https://www.meceware.com/) 
@@ -42,9 +42,7 @@
   let loadingYoutubePlayer = false;
   const loadingYoutubeDefer = new Deferred();
   class YouTubeVW {
-    constructor(global, document, id, wrapper, options) {
-      var _this = this;
-      let events = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : {};
+    constructor(global, document, id, wrapper, options, events = {}) {
       this.id = id;
       if (!this.isValid()) {
         return;
@@ -75,8 +73,7 @@
           });
         }
       };
-      onReady(function () {
-        let self = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this;
+      onReady((self = this) => {
         const playerOptions = {
           videoId: id,
           playerVars: {
@@ -166,9 +163,7 @@
   let loadingVimeoPlayer = 0;
   const loadingVimeoDefer = new Deferred();
   class VimeoVW {
-    constructor(document, id, wrapper, options) {
-      var _this = this;
-      let events = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
+    constructor(document, id, wrapper, options, events = {}) {
       this.id = id;
       if (!this.isValid()) {
         return;
@@ -231,8 +226,7 @@
           });
         }
       };
-      onReady(function () {
-        let self = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this;
+      onReady((self = this) => {
         self.player = new Vimeo.Player(iframe, playerOptions);
         self.player.on('play', e => {
           if (events.play) {
@@ -290,8 +284,7 @@
   }
 
   class HTML5VW {
-    constructor(document, id, wrapper, options) {
-      let events = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
+    constructor(document, id, wrapper, options, events = {}) {
       this.id = id;
       if (!this.isValid()) {
         return;
@@ -535,9 +528,7 @@
       }
     };
     class iwideo {
-      constructor(element) {
-        var _this = this;
-        let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      constructor(element, options = {}) {
         // Extend options
         Object.keys(defaults).forEach(key => {
           if (!Object.prototype.hasOwnProperty.call(options, key)) {
@@ -639,8 +630,7 @@
         this.videoID = parsed.id;
 
         // Generates a wrapper that is used for holding the media
-        const constructWrapper = function () {
-          let self = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this;
+        const constructWrapper = (self = this) => {
           // Get computed style of the container
           const containerStyle = getComputedStyle(self.container, null);
 
@@ -683,8 +673,7 @@
         };
 
         // Generates an overlay that is placed above the media to prevent interaction
-        const constructOverlay = function () {
-          let self = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this;
+        const constructOverlay = (self = this) => {
           const overlay = document.createElement('div');
           overlay.style.position = 'absolute';
           if (self.options.overlayClass) {
@@ -700,8 +689,7 @@
           overlay.style.width = '100%';
           self.wrapper.appendChild(overlay);
         };
-        const constructPlayer = function () {
-          let self = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _this;
+        const constructPlayer = (self = this) => {
           const events = {
             ready: () => {
               self.fire('ready', self);

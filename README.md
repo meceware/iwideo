@@ -26,7 +26,7 @@ npm run build
 Or with docker,
 
 ```
-docker run --rm --volume ./:/app --workdir /app --publish 3000:3000 node:22.5.1 /bin/bash -c "npm install && npm run build"
+docker run --rm --volume ./:/app --workdir /app --publish 3000:3000 node:23.0 /bin/bash -c "npm install && npm run build"
 ```
 
 The output minified JS file will be at the dist folder.
