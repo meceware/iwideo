@@ -383,11 +383,11 @@
   function throttle (delay, callback, options) {
     var _ref = {},
       _ref$noTrailing = _ref.noTrailing,
-      noTrailing = _ref$noTrailing === void 0 ? false : _ref$noTrailing,
+      noTrailing = _ref$noTrailing === undefined ? false : _ref$noTrailing,
       _ref$noLeading = _ref.noLeading,
-      noLeading = _ref$noLeading === void 0 ? false : _ref$noLeading,
+      noLeading = _ref$noLeading === undefined ? false : _ref$noLeading,
       _ref$debounceMode = _ref.debounceMode,
-      debounceMode = _ref$debounceMode === void 0 ? undefined : _ref$debounceMode;
+      debounceMode = _ref$debounceMode === undefined ? undefined : _ref$debounceMode;
     /*
      * After wrapper has stopped being called, this timeout ensures that
      * `callback` is executed at the proper times in `throttle` and `end`
@@ -410,7 +410,7 @@
     function cancel(options) {
       var _ref2 = options || {},
         _ref2$upcomingOnly = _ref2.upcomingOnly,
-        upcomingOnly = _ref2$upcomingOnly === void 0 ? false : _ref2$upcomingOnly;
+        upcomingOnly = _ref2$upcomingOnly === undefined ? false : _ref2$upcomingOnly;
       clearExistingTimeout();
       cancelled = !upcomingOnly;
     }
