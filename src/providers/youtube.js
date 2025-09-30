@@ -66,6 +66,10 @@ export default class YouTubeVW {
               self.player.mute();
             }
 
+            if ( options.autoplay ) {
+              self.player.playVideo();
+            }
+
             if ( events.ready ) {
               events.ready( e );
             }
