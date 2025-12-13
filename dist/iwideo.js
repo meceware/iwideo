@@ -599,7 +599,6 @@
               // eslint-disable-next-line no-useless-escape
               const match = val.match(/^(mp4|webm|ogv|ogg)\:(.*)/);
               if (match && match[1] && match[2]) {
-                // eslint-disable-next-line prefer-destructuring
                 result[match[1] === 'ogv' ? 'ogg' : match[1]] = match[2];
                 ready = 1;
               }
@@ -773,7 +772,7 @@
           delete this.container.iwideo.worker;
           // Delete the instance
           delete this.container.iwideo;
-        } catch (e) {
+        } catch {
           // Nothing to do when error is invoked
         }
       }
@@ -877,7 +876,7 @@
           }
           try {
             new iwideo(el, JSON.parse(decodeURIComponent(el.getAttribute('data-iwideo'))));
-          } catch (e) {
+          } catch {
             // Nothin to do when an error is invoked
           }
         });
