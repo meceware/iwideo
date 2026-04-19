@@ -31,18 +31,18 @@
     "last 2 iOS major versions"
   ],
   "devDependencies": {
-    "@babel/core": "^7.28.5",
-    "@babel/preset-env": "^7.28.5",
-    "@rollup/plugin-babel": "^6.1.0",
-    "@rollup/plugin-commonjs": "^29.0.0",
+    "@babel/core": "^7.29.0",
+    "@babel/preset-env": "^7.29.2",
+    "@rollup/plugin-babel": "^7.0.0",
+    "@rollup/plugin-commonjs": "^29.0.2",
     "@rollup/plugin-eslint": "^9.2.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
-    "@rollup/plugin-terser": "^0.4.4",
-    "core-js": "^3.47.0",
+    "@rollup/plugin-terser": "^1.0.0",
+    "core-js": "^3.49.0",
     "del": "^8.0.1",
     "gulp": "^5.0.1",
     "gzip-size": "^7.0.0",
-    "rollup": "^4.53.3",
+    "rollup": "^4.60.2",
     "rollup-plugin-serve": "^3.0.0"
   },
   "dependencies": {
